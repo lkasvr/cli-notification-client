@@ -8,12 +8,12 @@ const host = "127.0.0.1";
 const port = 3080;
 
 // A simple dataSource that changes over time
-const requestListener = function (request, response) {
+const requestListener = (request, response) => {
   debugger
-  console.log(`server.js: Enter in requestListener -> ${request.url}`);
-  if (request.url === '/notification' || request.url === '/notification.html') {
+    console.log(`server.js: Enter in requestListener -> ${request.url}`);
+    if (request.url == '/' || request.url === '/notification' || request.url === '/notification.html') {
     console.log(`server.js: The request.url is ${request.url}`);
-        fs.readFile("notification.html", function(error, data) {
+        fs.readFile("notification.html", (error, data) => {
             if (error) {    
                 console.log(`server.js: An error occur ${error}`);
                 response.writeHead(404);
@@ -27,7 +27,7 @@ const requestListener = function (request, response) {
             }
         });
   } else if (request.url === '/websocket.js') {
-        fs.readFile("websocket.js", function(error, data) {
+        fs.readFile("websocket.js", (error, data) => {
             if (error) {    
                 console.log(`server.js: An error occur ${error}`);
                 response.writeHead(404);
@@ -43,7 +43,7 @@ const requestListener = function (request, response) {
         
   } else if (request.url === '/console.css') {
     debugger
-    fs.readFile("console.css", function(error, data) {
+    fs.readFile("console.css", (error, data) => {
         if (error) {    
             console.log(`server.js: An error occur ${error}`);
             response.writeHead(404);
@@ -65,6 +65,4 @@ const requestListener = function (request, response) {
 };
 
 const server = http.createServer(requestListener);
-server.listen(port, host, () => {
-  console.log(`server.js: server running at http://${host}:${port}`);
-});
+server.listen(port, host, () => console.log(`server.js: server running at http://${host}:${port}`));
