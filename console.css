@@ -2,7 +2,7 @@ body{
 	font-family: arial;	
 }
 
-.wrapper{
+.wrapper {
 	width: 800px;
 	height: 100vh;
 	margin: 0 auto;
@@ -12,7 +12,7 @@ body{
 	justify-content: center;
 }
 
-.cmd{
+.cmd {
 	position: relative;
 	display: block;
 	
@@ -30,7 +30,7 @@ body{
  * 2. Set dimension
  * 3. Style
  */
-.title-bar{
+.title-bar {
 	/* 1 */
 	position: absolute;
 	top: 0;
@@ -48,7 +48,7 @@ body{
 	text-align: center;
 }
 
-.tool-bar{
+.tool-bar {
 	position: absolute;
 	top: 40px;
 	left: 0;
@@ -56,29 +56,29 @@ body{
 	display: block;
 	width: 100%;
 	height: 30px;
-	line-height: 30px;
 	background-color: #242424;
 }
 
-.tool-bar ul{
+.tool-bar > ul{
 	list-style-type: none;
+	line-height: 10px;
 	margin: 0px;
 	padding: 0px;
 }
 
-.tool-bar ul li{
+.tool-bar > ul > li{
 	display: inline-block;
 	margin: 0;
 	padding: 0;
 }
 
-.tool-bar ul li a{
+.tool-bar > ul > li > a{
 	padding: 0px 6px;
 	text-decoration: none;
 	color: #FFFFFF;
 }
 
-.tool-bar ul li a:hover{
+.tool-bar > ul > li > a:hover{
 	text-decoration: underline;
 }
 
@@ -95,4 +95,8 @@ body{
 	color: #FFFFFF;
 	margin: 0px;
 	font-size: 1.1rem;
+}
+
+a.nav-link.dropdown-toggle:after {
+		content: none;
 }
