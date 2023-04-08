@@ -223,6 +223,11 @@
     font-size: 1.1rem;
 }
 
+.hiddenTextarea {
+    display: none;
+}
+
+
 a.nav-link.dropdown-toggle:after {
     content: none;
 }
