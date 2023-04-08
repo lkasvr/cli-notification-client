@@ -15,8 +15,12 @@ const requestListener = (request, response) => {
         fs.readFile("notification.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}));
   } else if (request.url === '/websocket.js') {
         fs.readFile("websocket.js", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/javascript'}));
-  } else if (request.url === '/console.css') {
-        fs.readFile("console.css", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/css'}));
+  } else if (request.url === '/console.js') {
+        fs.readFile("console.js", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/javascript'}));
+  } else if (request.url === '/logger.js') {
+        fs.readFile("logger.js", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/javascript'}));
+  } else if (request.url === '/notification.css') {
+        fs.readFile("notification.css", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/css'}));
   } else {
     console.log(`server.js: The resource ${request.url} does not found`);
         actionExecute({error: `The resource ${request.url} does not exist`, response: response});

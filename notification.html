@@ -8,85 +8,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- JQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.4.js"
-        integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
+
+    <!-- Moment JS -->
+    <script src="https://momentjs.com/downloads/moment.js" integrity="sha384-mFSRsfjTuXtihSLc/J0LxrFE1H9WRRllwGM6pxxyiYACkVdxRG82d3DQVlq8yXZM" crossorigin="anonymous"></script>
+
+    <!-- APP JS -->
+    <script src="websocket.js"></script>
+    <script src="console.js"></script>
+    <script src="logger.js"></script>
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"  integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 
-    <!-- <link rel="stylesheet" href="http://localhost:3080/console.css"> -->
-    <link rel="stylesheet" href="console.css">
+    <!-- Notification CSS -->
+    <link rel="stylesheet" href="notification.css">
 
     <!-- Own JQuery -->
     <script>
         jQuery.noConflict();
         jQuery(($) => {
 
-            // Event Handling Function's
-            $('#add-tab-btn-li').click(() => handleAddTab());
-            $('.li-tab').click(handleSetSelectedTextarea);
-
-            /* Event Handling Routine - Close Tab Session */
-            function handleCloseTab(tabId, textareaNumId) {
-                const selectedTextarea = $("textarea[data-selected='true']");
-                $(`#${tabId}`).remove();
-                $(`#textarea-session-${textareaNumId}`).remove();
-                if (selectedTextarea.attr('id') === `textarea-session-${textareaNumId}`) {
-                    const tabQTY = $('.li-tab').length;
-                    const currentTextarea = $(`#textarea-session-${tabQTY < 3 ? 1 : textareaNumId - 1}`);
-                    currentTextarea.removeClass('hiddenTextarea');
-                    currentTextarea.attr('data-selected', true);
-                }
-            }
-
-            /* Event Handling Routine - Seleted Tab Session */
-            function handleSetSelectedTextarea() {
-                const numId = parseInt($(this).attr('id').slice(7));
-                const oldTextarea = $("textarea[data-selected='true']");
-                const currentTextarea = $(`#textarea-session-${numId}`);
-                oldTextarea.attr('data-selected', false)
-                currentTextarea.attr('data-selected', true);
-                oldTextarea.addClass('hiddenTextarea');
-                currentTextarea.removeClass('hiddenTextarea');
-            }
-
-            /* Event Handling Routine - Add Tab Session */
-            const handleAddTab = () => {
-                const tabQTY = $('.li-tab').length;
-                if (tabQTY < 10) {
-                    let sessionName = prompt('Forneça um nome a sua nova sessão:');
-                    const lastLiElement = $('.li-tab')[tabQTY - 1];
-                    const numId = parseInt(lastLiElement.id.slice(7)) + 1;
-
-                    const li_newTab_id = `li-tab-${numId}`;
-                    const li_tab = $(`
-                    <li id="${li_newTab_id}" class="li-tab" data-textareaid="textarea-session-${numId}">
-                        <a href="#">${!sessionName ? `New Session ${numId}` : sessionName}</a>
-                        <button id="btn-close-tab-${numId}" type="button" class="btn-close btn-close-white" aria - label="Close" ></button >
-                    </li>
-                    `);
-
-                    const lastTextareaElement = $(`#${$('.consoleSession')[0].getAttribute('id')}`);
-                    lastTextareaElement.attr('data-selected', false);
-                    lastTextareaElement.addClass('hiddenTextarea');
-
-                    const newTextarea = $(`<textarea id="textarea-session-${numId}" class="textarea consoleSession" data-selected="true" readonly>Type something here ${numId}...</textarea>`);
-
-                    $(`#${lastLiElement.id}`).after(li_tab);
-                    $(`#btn-close-tab-${numId}`).click(function () { handleCloseTab(li_newTab_id, numId) });
-                    $(`#${li_newTab_id}`).click(handleSetSelectedTextarea);
-
-                    $('.tabs-bar').after(newTextarea);
-                }
-            }
-
-            let txtConsole = jQuery('#textarea-session-1');
-            let log =  createNotificationLog(txtConsole);
-            let ws = createNotificationWebSocket(log, null);
-            debugger
-            log.append('info', 'My first log.');
-            ws.connect("http://localhost:8080/");
+            let notification = {
+                logger: createLogger(jQuery('#textarea-session-1')),
+                console: createConsole(jQuery("#notificationConsole"))
+            };
         });
     </script>
 </head>
@@ -101,7 +47,7 @@
         </div>
         <div class="col-md-12 console" style="background-color: blue">
             <div class="wrapper">
-                <div class="cmd">
+                <div id="notificationConsole" class="cmd">
                     <div class="title-bar">WEBSOCKET CONSOLE</div>
                     <nav class="navbar navbar-expand-lg tool-bar">
                         <ul>
@@ -130,7 +76,7 @@
                                 <a href="#">Main Session</a>
                             </li>
                             <!-- INSERT TAB HERE -->
-                            <li id="add-tab-btn-li">
+                            <li id="add-tab-btn-li" class="add-tab-btn-li">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-plus-circle" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                                     <path
@@ -140,7 +86,7 @@
                         </ul>
                     </nav>
                     <textarea id="textarea-session-1" class="textarea consoleSession" data-selected="true"
-                        readonly>Type something here 1...</textarea>
+                        readonly>Session Begin [info]</textarea>
                     <!-- INSERT TEXTAREA HERE -->
                 </div>
             </div>
