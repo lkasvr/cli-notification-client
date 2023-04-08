@@ -10,7 +10,6 @@ const port = 3080;
 
 // A simple dataSource that changes over time
 const requestListener = (request, response) => {
-    debugger
     console.log(`server.js: Enter in requestListener -> ${request.url}`);
     if (request.url == '/' || request.url === '/notification' || request.url === '/notification.html') {
         fs.readFile("notification.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}));

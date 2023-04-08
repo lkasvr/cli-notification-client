@@ -19,11 +19,9 @@
           integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 
     <!-- APP JS -->
-    <!-- <script src="http://localhost:3080/websocket.js"></script> -->
     <script src="websocket.js"></script>
 
     <!-- APP CSS -->
-    <!-- <link rel="stylesheet" href="http://localhost:3080/console.css"> -->
     <link rel="stylesheet" href="console.css">
 
     <!-- Own JQuery -->
@@ -64,8 +62,9 @@
             /* Event Handling Function - Remove Tabs */
             const handleRemoveElement = (elementSelector) => $(`${elementSelector}`).remove();
 
-            //let log =  createNotificationLog($('#textarea-session-1'));
-           //log.append('info', 'my first log.');
+            let txtConsole = jQuery('#textarea-session-1');
+            let log =  createNotificationLog(txtConsole);
+            log.append('info', 'my first log.');
         });
     </script>
 
