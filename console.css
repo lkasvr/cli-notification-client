@@ -123,6 +123,92 @@
     text-decoration: underline;
 }
 
+.tabs-bar {
+    width: 100%;
+    height: 30px;
+    background-color: #242424;
+    font-weight: bold;
+}
+
+.tabs-bar ul {
+    display: flex;
+    flex-flow: row nowrap;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    list-style-type: none;
+    gap: 1rem;
+}
+
+.li-tab {
+    height: 1.75rem;
+    padding: 0.25rem;
+    background-color: #343a40;
+    border: 1px solid #343a40;
+    border-top-right-radius: 0.5rem;
+    border-top-left-radius: 0.5rem;
+    border-bottom: none;
+    display: flex;
+    flex-flow: row nowrap;
+    align-content: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    transition: all 0.15s ease-in-out;
+}
+/*
+.li-tab::before {
+    content: "";
+    position: absolute;
+
+    bottom: 0px;
+    margin-left: -21px;
+    height: 0.25rem;
+    width: 16px;
+    border: 1px solid #dee2e6;
+    border-top: 0;
+    border-bottom-left-radius: 0.15rem;
+    border-bottom-right-radius: 0.15rem;
+}
+*/
+.li-tab:hover {
+    background-color: #495057;
+}
+
+.li-tab a {
+    font-size: 0.8rem;
+    text-decoration: none;
+    color: #FFFFFF;
+}
+
+.li-tab a:hover {
+    text-decoration: none;
+}
+
+.li-tab button {
+    height: 0.25rem;
+    width: 0.25rem;
+}
+
+#add-tab-btn-li {
+    background-color: transparent;
+    border: none;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#add-tab-btn-li svg {
+    width: 20px;
+    height: 20px;
+    fill: #FFFFFF;
+    transition: all 0.15s ease-in-out;
+}
+
+#add-tab-btn-li svg:hover {
+    fill: #adb5bd;
+    cursor: pointer;
+}
+
 .textarea {
     position: relative;
     padding: 12px;
