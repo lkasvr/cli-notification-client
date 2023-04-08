@@ -80,6 +80,13 @@
                     $('.tabs-bar').after(newTextarea);
                 }
             }
+
+            let txtConsole = jQuery('#textarea-session-1');
+            let log =  createNotificationLog(txtConsole);
+            let ws = createNotificationWebSocket(log, null);
+            debugger
+            log.append('info', 'My first log.');
+            ws.connect("http://localhost:8080/");
         });
     </script>
 </head>
