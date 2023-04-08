@@ -55,12 +55,14 @@
             const handleAddTab = () => {
                 const tabQTY = $('.li-tab').length;
                 if (tabQTY < 10) {
+                    let sessionName = prompt('Forneça um nome a sua nova sessão:');
                     const lastLiElement = $('.li-tab')[tabQTY - 1];
                     const numId = parseInt(lastLiElement.id.slice(7)) + 1;
 
                     const li_newTab_id = `li-tab-${numId}`;
                     const li_tab = $(`
                     <li id="${li_newTab_id}" class="li-tab" data-textareaid="textarea-session-${numId}">
+                        <a href="#">${!sessionName ? `New Session ${numId}` : sessionName}</a>
                         <button id="btn-close-tab-${numId}" type="button" class="btn-close btn-close-white" aria - label="Close" ></button >
                     </li>
                     `);
@@ -72,7 +74,7 @@
                     const newTextarea = $(`<textarea id="textarea-session-${numId}" class="textarea consoleSession" data-selected="true" readonly>Type something here ${numId}...</textarea>`);
 
                     $(`#${lastLiElement.id}`).after(li_tab);
-                    $(`#btn-close-tab-${numId}`).click(function () { handleCloseTab(li_newTab_id, numId, tabQTY) });
+                    $(`#btn-close-tab-${numId}`).click(function () { handleCloseTab(li_newTab_id, numId) });
                     $(`#${li_newTab_id}`).click(handleSetSelectedTextarea);
 
                     $('.tabs-bar').after(newTextarea);
@@ -118,6 +120,7 @@
                     <nav class="navbar navbar-expand-lg tabs-bar">
                         <ul id="ul-tabs">
                             <li id="li-tab-1" class="li-tab" data-textareaid="textarea-session-1">
+                                <a href="#">Main Session</a>
                             </li>
                             <!-- INSERT TAB HERE -->
                             <li id="add-tab-btn-li">
