@@ -11,14 +11,15 @@ function createNotificationLog(txtConsoleParam) {
 
 
 function createNotificationWebSocket(logParam, painelParam) {
+   debugger;
    let notificationWebSocket = {
       log: logParam,
       painel: painelParam,
       connect: function(address) {
-         log.append('info', `websocket.js: connecting ${address}.`);
+         this.log.append('info', `websocket.js: Connecting [${address}].`);
       },
       subscrible: function(channel) {
-         log.append('info', `websocket.js: Subscribing ${channel}.`);
+         this.log.append('info', `websocket.js: Subscribing [${channel}].`);
       },
    };
    return notificationWebSocket;

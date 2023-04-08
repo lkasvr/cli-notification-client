@@ -65,7 +65,9 @@
             let txtConsole = jQuery('#textarea-session-1');
             let log =  createNotificationLog(txtConsole);
             let ws = createNotificationWebSocket(log, null);
-            log.append('info', 'my first log.');
+            debugger
+            log.append('info', 'My first log.');
+            ws.connect("http://localhost:8080/");
         });
     </script>
 
