@@ -1,68 +1,40 @@
 // this is just to demo the concept of SSE, not intended for production usage.
 
 const http = require("http");
-var fs = require("fs");
+const fs = require("fs");
 const WebSocket = require('ws');
+const moment = require('moment');
 
 const host = "127.0.0.1";
 const port = 3080;
 
 // A simple dataSource that changes over time
 const requestListener = (request, response) => {
-  debugger
+    debugger
     console.log(`server.js: Enter in requestListener -> ${request.url}`);
     if (request.url == '/' || request.url === '/notification' || request.url === '/notification.html') {
-    console.log(`server.js: The request.url is ${request.url}`);
-        fs.readFile("notification.html", (error, data) => {
-            if (error) {    
-                console.log(`server.js: An error occur ${error}`);
-                response.writeHead(404);
-                response.write(error);
-                response.end();
-            } else {
-                console.log(`server.js: The HTML was loaded ${data}`);
-                response.writeHead(200, { 'Content-Type': 'text/html' });
-                response.write(data);
-                response.end();
-            }
-        });
+        fs.readFile("notification.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}));
   } else if (request.url === '/websocket.js') {
-        fs.readFile("websocket.js", (error, data) => {
-            if (error) {    
-                console.log(`server.js: An error occur ${error}`);
-                response.writeHead(404);
-                response.write(error);
-                response.end();
-            } else {
-                console.log(`server.js: The HTML was loaded ${data}`);
-                response.writeHead(200, { 'Content-Type': 'text/javascript' });
-                response.write(data);
-                response.end();
-            }
-        });
-        
+        fs.readFile("websocket.js", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/javascript'}));
   } else if (request.url === '/console.css') {
-    debugger
-    fs.readFile("console.css", (error, data) => {
-        if (error) {    
-            console.log(`server.js: An error occur ${error}`);
-            response.writeHead(404);
-            response.write(error);
-            response.end();
-        } else {
-            console.log(`server.js: The HTML was loaded ${data}`);
-            response.writeHead(200, { 'Content-Type': 'text/css' });
-            response.write(data);
-            response.end();
-        }
-    });
+        fs.readFile("console.css", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/css'}));
   } else {
     console.log(`server.js: The resource ${request.url} does not found`);
-    response.statusCode = 404;
-    response.end(`The resource ${request.url} does not exist`);
+        actionExecute({error: `The resource ${request.url} does not exist`, response: response});
   }
 
 };
+
+actionExecute = function (action) {
+    let responseCode = action.error ? 404 : 200;
+    action.response.writeHead(responseCode, action.contentType);
+    action.response.write(action.data);
+    action.response.end(action.error);
+};
+
+
+
+
 
 const server = http.createServer(requestListener);
 server.listen(port, host, () => console.log(`server.js: server running at http://${host}:${port}`));

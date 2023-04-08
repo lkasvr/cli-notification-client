@@ -8,14 +8,29 @@
 
         <!-- JQuery --> 
         <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
-     
+
+        <!-- Moment CSS -->
+        <script src="https://momentjs.com/downloads/moment.js" integrity="sha384-mFSRsfjTuXtihSLc/J0LxrFE1H9WRRllwGM6pxxyiYACkVdxRG82d3DQVlq8yXZM" crossorigin="anonymous"></script>
+
         <!-- Bootstrap --> 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
+        <!-- APP JS -->
+        <script src="http://localhost:3080/websocket.js"></script>
+
+        <!-- APP CSS -->
         <link rel="stylesheet" href="http://localhost:3080/console.css">
+
+        <script>
+            jQuery.noConflict();
+            jQuery(($) => {
+                let log =  createNotificationLog($('#textArea'));
+                log.append('info', 'my first log.');
+            });
+        </script>
     </head>
 
     <body>
@@ -56,7 +71,7 @@
                                 <li><a href="#">session2</a></li>
                             </ul>
                         </nav>
-                        <textarea class="textarea" readonly="true">Type something here 1...</textarea>
+                        <textarea id="textArea" class="textarea" readonly="true">Type something here 1...</textarea>
                         <textarea style="display: none;" class="textarea">Type something here 2...</textarea>
                     </div>
                 </div>
@@ -89,6 +104,7 @@
                 </div>
             </div>
         </div>
+
 
     </body>
 

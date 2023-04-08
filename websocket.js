@@ -1,10 +1,25 @@
-const WebSocket = require('ws');
-const ws = new WebSocket("wss://stream.binance.com:9443/ws/btcbusd@bookTicker");
- 
-ws.onmessage = (event) => {
-   process.stdout.write('\033c');
-   const obj = JSON.parse(event.data);
-   console.log(`Symbol: ${obj.s}`);
-   console.log(`Best ask: ${obj.a}`);
-   console.log(`Best bid: ${obj.b}`);
+function createNotificationLog(textAreaParam) {
+
+   let log = {
+      textArea: textAreaParam,
+      append: function(severity, message) {
+         debugger
+         textArea.text(moment().format('YYYY-MM-DDTHH:mm:ss') + "[" + severity + "]" + message + "\n" + textArea.text())
+
+      }
+   };
+   return log;
+}
+
+
+function createNotificationWebSocket(logParam, painelParam) {
+   let notificationWebSocket = {
+      log: logParam,
+      painel: painelParam,
+      connect: function() {
+         log.append("Connecting");
+
+      }
+   };
+   return notificationWebSocket;
 }
