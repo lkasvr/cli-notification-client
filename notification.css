@@ -38,6 +38,7 @@
 }
 
 .wrapper-title {
+    background-color: #242424;
     width: 100%;
     height: 5vh;
     margin: 0 auto;
@@ -54,8 +55,7 @@
     align-items: center;
     justify-content: center;
     color: #FFFFFF;
-    background-color: #242424;
-    font-size: xxx-large;
+    font-size: 2rem;
     font-weight: bold;
 }
 
@@ -226,7 +226,6 @@
 .hiddenTextarea {
     display: none;
 }
-
 
 a.nav-link.dropdown-toggle:after {
     content: none;

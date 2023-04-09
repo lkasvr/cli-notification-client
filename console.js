@@ -29,10 +29,10 @@ function createConsole(templateParam) {
             }
 
             /* Event Handling Routine - Add Tab Session */
-            const addTab = () => {
+            function addTab() {
                 const tabQTY = self.template.find('.li-tab').length;
                 if (tabQTY < 10) {
-                    let sessionName = prompt('Forneça um nome a sua nova sessão:');
+                    let sessionName = jQuery('#session-name-input').val();
                     const lastLiElement = self.template.find('.li-tab')[tabQTY - 1];
                     const numId = parseInt(lastLiElement.id.slice(7)) + 1;
 
@@ -55,11 +55,12 @@ function createConsole(templateParam) {
                     self.template.find(`#${li_newTab_id}`).click(selectedTextarea);
 
                     self.template.find('.tabs-bar').after(newTextarea);
+                    jQuery('.modal').modal('toggle');
                 }
             }
 
             // Event Handling Function's
-            self.template.find('.add-tab-btn-li').click(() => addTab());
+            jQuery('.modal-btn-connect').click(addTab);
             self.template.find('.li-tab').click(selectedTextarea);
         }
     };
