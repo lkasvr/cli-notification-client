@@ -230,3 +230,18 @@
 a.nav-link.dropdown-toggle:after {
     content: none;
 }
+
+.modal-header {
+    background-color: #242424;
+    color: #FFFFFF;
+}
+
+.modal-btn-connect {
+    background-color: #4b1d3f;
+    border: none;
+}
+
+.modal-btn-connect:hover {
+    background-color: #4b1d3f;
+    opacity: 0.9;
+}
