@@ -1,5 +1,5 @@
 <!-- Modal HTML -->
-<div class="modal fade" id="modalConnection" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade modal-connection" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -10,7 +10,7 @@
             <div class="modal-body">
                 <form>
                     <div class="mb-3">
-                        <label for="host-name" class="col-form-label">Host:</label>
+                        <label for="host-name" class="col-form-label">Host*:</label>
                         <input type="text" class="form-control" id="host-name" value="ws://localhost:8080/connection">
                     </div>
                     <div class="mb-3">
@@ -20,9 +20,9 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary btn-connection" style="display:none;">Connect</button>
-                <button type="button" class="btn btn-primary btn-new-connection" style="display:none;">New connect</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success btn-connection" style="display:none;">Connect</button>
+                <button type="button" class="btn btn-success btn-new-connection" style="display:none;">New connect</button>
             </div>
         </div>
     </div>

@@ -1,11 +1,13 @@
-function createConsole(template, modal) {
+function createConsole(template, modalConnection, modalSubscrible) {
     let consoler = {
+
         template,
-        modal,
+        modalConnection,
+        modalSubscrible,
         sessions: new Map(),
+
         init: function() {
             const self = this;
-
 
             function closeTab(textArea, tab) {
                 const i = self.template.find('.li-tab').index(tab);
@@ -57,13 +59,9 @@ function createConsole(template, modal) {
                 self.template.find(`#${li_newTab_id}`).click(selectedTextarea);
 
                 self.template.find('.tabs-bar').after(newTextarea);
-
-
-
             }
 
             function connect(textArea, url) {
-                debugger
                 const numId = textArea.attr('id').slice(17);
                 const sessionName = self.template.find(`#li-tab-${numId}>a`).html()
 
@@ -75,31 +73,46 @@ function createConsole(template, modal) {
             }
 
             // Event Handling Function's
-            modal.find('.btn-connection').click(function () {
-                const url = modal.find('#host-name').val();
-                modal.modal('toggle'); // close modal
-
+            self.modalConnection.find('.btn-connection').click(function () {
+                const url =  self.modalConnection.find('#host-name').val();
+                self.modalConnection.modal('hide');
                 connect(self.template.find('textarea[data-selected="true"]'), url);
             });
 
-            modal.find('.btn-new-connection').click(function () {
-                const url = modal.find('#host-name').val();
-                const sessionName = self.modal.find('#session-name-input').val();
-                modal.modal('toggle'); // close modal
+            self.modalConnection.find('.btn-new-connection').click(function () {
+                const url = self.modalConnection.find('#host-name').val();
+                const sessionName = self.modalConnection.find('#session-name-input').val();
+                self.modalConnection.modal('hide');
                 addTab(sessionName);
                 connect(self.template.find('textarea[data-selected="true"]'), url);
             });
 
             self.template.find('.new-session').click(function () {
-                modal.find('.btn-connection').hide();
-                modal.find('.btn-new-connection').show();
-                modal.modal('toggle');
+                self.modalConnection.find('.btn-connection').hide();
+                self.modalConnection.find('.btn-new-connection').show();
+                self.modalConnection.modal('show');
             });
 
             self.template.find('.current-session').click(function () {
-                modal.find('.btn-connection').show();
-                modal.find('.btn-new-connection').hide();
-                modal.modal('toggle');
+                self.modalConnection.find('.btn-connection').show();
+                self.modalConnection.find('.btn-new-connection').hide();
+                self.modalConnection.modal('show');
+            });
+
+            self.template.find('.subscrible-session').click(function () {
+                self.modalSubscrible.modal('show');
+            });
+
+            self.modalSubscrible.find('.btn-subscribe').click(function () {
+                const channelsText =  self.modalSubscrible.find('.channels').val();
+
+                if (channelsText &&  channelsText.length > 0) {
+                    const textAreaCurrent = self.template.find("textarea[data-selected='true']");
+                    const session = self.sessions.get(textAreaCurrent.attr('id'));
+                    const channels = channelsText.split(',');
+                    session.ws.subscrible(channels);
+                }
+
             });
 
             self.template.find('.li-tab').click(selectedTextarea);

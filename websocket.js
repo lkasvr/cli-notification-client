@@ -5,22 +5,27 @@ function createWebSocket(logger) {
    let notificationWebSocket = {
       logger,
       ws: null,
+      connected: false,
+      channels: [],
       connect: function(url) {
          const self = this;
          self.logger.append('info', `websocket.js: Connecting [${url}].`);
          self.ws = new WebSocket(url);
          self.ws.onopen = function() {
             self.logger.append('info', `websocket.js: Connected [${url}].`);
+            self.connected = true;
          };
          self.ws.onmessage = function (evt) {
             self.logger.append('info', `websocket.js: received [${evt.data}].`);
          };
       },
-      subscrible: function(channel) {
-         if (this.ws) {
-            this.logger.append('info', `websocket.js: Subscribing [${channel}].`);
-            this.ws.send("sjaksjkajs");
-            this.logger.append('info', `websocket.js: Subscribed [${channel}].`);
+      subscrible: function(channels) {
+         const self = this;
+         if (self.ws) {
+            self.logger.append('info', `websocket.js: Subscribing [${channels}].`);
+            self.ws.send(JSON.stringify({operation: 'SUBSCRIBING', channels}));
+            self.channels.push(channels);
+            self.logger.append('info', `websocket.js: Subscribed [${channels}].`);
          }
       },
 
