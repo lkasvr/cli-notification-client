@@ -1,8 +1,9 @@
-function createLogger(textArea) {
+function createLogger(sout, sessionName) {
     let log = {
-        txtConsole: textArea,
+        sout,
+        sessionName,
         append: function(severity, message) {
-            this.txtConsole.text(moment().format('YYYY-MM-DDTHH:mm:ss') + " [" + severity + "] " + message + "\n" + this.txtConsole.text())
+            this.sout.text(moment().format('YYYY-MM-DDTHH:mm:ss')  + " [" + sessionName + "] [" + severity + "] " + message + "\n" + this.sout.text())
         }
     };
     return log;

@@ -11,8 +11,10 @@ const port = 3080;
 // A simple dataSource that changes over time
 const requestListener = (request, response) => {
     console.log(`server.js: Enter in requestListener -> ${request.url}`);
-    if (request.url == '/' || request.url === '/notification' || request.url === '/notification.html') {
+  if (request.url == '/' || request.url === '/notification' || request.url === '/notification.html') {
         fs.readFile("notification.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}));
+  } else if (request.url === '/modal-connection.html') {
+        fs.readFile("modal-connection.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}));
   } else if (request.url === '/websocket.js') {
         fs.readFile("websocket.js", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/javascript'}));
   } else if (request.url === '/console.js') {
@@ -31,7 +33,9 @@ const requestListener = (request, response) => {
 actionExecute = function (action) {
     let responseCode = action.error ? 404 : 200;
     action.response.writeHead(responseCode, action.contentType);
-    action.response.write(action.data);
+    if (responseCode == 200) {
+        action.response.write(action.data);
+    }
     action.response.end(action.error);
 };
 

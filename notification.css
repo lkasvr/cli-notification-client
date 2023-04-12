@@ -245,3 +245,12 @@ a.nav-link.dropdown-toggle:after {
     background-color: #4b1d3f;
     opacity: 0.9;
 }
+
+.tabbable .nav-tabs .nav-link {
+    white-space: nowrap;
+}
+.navbar-brand, .navbar-nav > li > a {
+    line-height: 100px;
+    height: 75px;
+    padding-top: 0px;
+}
