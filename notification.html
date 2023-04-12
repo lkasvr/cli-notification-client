@@ -31,7 +31,7 @@
     <!-- Own JQuery -->
     <script>
         jQuery.noConflict();
-        let notification =  null;
+        let notification = null;
         jQuery(($) => {
 
             const loads = [];
@@ -48,103 +48,210 @@
                 const console = createConsole($("#notificationConsole"), $('.modal-connection'), $('.modal-subscrible'));
             });
 
+            $('.btn-toasts').click(() => $('.notification-toast').toast('show'));
+            $('.btn-toasts-test').click(() => $('.call-toast').toast('show'));
         });
 
     </script>
 </head>
 
 <body>
+    <div class="container-fluid">
+        <div class="row" style="height: 6vh;">
+            <div class="col-md-12 p-0">
+                <!-- HEADER -->
+                <div class="wrapper-title p-1">
+                    <div class="title-bar-header px-2">
+                        <div><!-- To flex space-between --></div>
+                        NOTIFICATION PoC
 
-    <div class="screen">
-        <div class="col-md-12 title">
-            <div class="wrapper-title">
-                <div class="title-bar-header">NOTIFICATION PoC</div>
-            </div>
-        </div>
-        <div class="col-md-12 console">
-
-
-            <div class="wrapper">
-                <div id="notificationConsole" class="cmd">
-                    <div class="title-bar">WEBSOCKET CONSOLE</div>
-                    <nav class="navbar navbar-expand-lg tool-bar">
-                        <ul>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">File</a>
-                                <ul class="dropdown-menu">
-                                    <li id="">
-                                        <a class="dropdown-item current-session">Connect</a>
-                                    </li>
-                                    <li><a class="dropdown-item subscrible-session" href="#">Subscrible</a></li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#">Edit</a></li>
-                            <li><a href="#">View</a></li>
-                        </ul>
-                    </nav>
-                    <!-- Console Tabs  -->
-                    <nav class="navbar navbar-expand-lg tabs-bar">
-                        <ul id="ul-tabs">
-                            <li id="li-tab-1" class="li-tab" data-textareaid="textarea-session-1" title="Main Session">
-                                <a href="#">Main Session</a>
-                            </li>
-                            <!-- INSERT TAB HERE -->
-                            <li id="add-tab-btn-li" class="add-tab-btn-li new-session">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-plus-circle" viewBox="0 0 16 16">
-                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                        <!-- BUTTON GROUP PANEL -->
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-light btn-toasts-test" data-bs-toggle="collapse"
+                                data-bs-target="#collapseNotificationBodyCard" aria-expanded="false"
+                                aria-controls="collapseNotificationBodyCard">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-bell" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z">
+                                    </path>
                                 </svg>
-                            </li>
-                        </ul>
-                    </nav>
-                    <textarea id="textarea-session-1" class="textarea consoleSession" data-selected="true"
-                        readonly>Session Begin [info]</textarea>
-                    <!-- INSERT TEXTAREA HERE -->
+                                <span class="visually-hidden">Button</span>
+                            </button>
+
+                            <button type="button" class="btn btn-light btn-toasts" data-bs-toggle="collapse"
+                                data-bs-target="#collapseNotificationBodyCard" aria-expanded="false"
+                                aria-controls="collapseNotificationBodyCard">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-bell" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z">
+                                    </path>
+                                </svg>
+                                <span class="visually-hidden">Button</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-12 message">
-            <div class="wrapper">
-                <div class="card" style="width: 100%; height: 100%">
-                    <h5 class="card-header h5">NOTIFICATIONS</h5>
-                    <div class="card-body">
-                        <div class="card" style="margin-bottom: 10px">
-                            <div class="card-body">
-                                <h5 class="card-title">Panel title</h5>
-                                <h6 class="card-subtitle mb-2 text-muted">Panel subtitle</h6>
-                                <p class="card-text">Some quick example text to build on the panel title and make up the
-                                    bulk of the panel's content.</p>
-                                <a href="#!" class="card-link">Card link</a>
-                                <a href="#!" class="card-link">Another link</a>
-                            </div>
-                        </div>
-                        <div class="card" style="margin-bottom: 10px">
-                            <div class="card-body">
-                                <h5 class="card-title">Panel title</h5>
-                                <h6 class="card-subtitle mb-2 text-muted">Panel subtitle</h6>
-                                <p class="card-text">Some quick example text to build on the panel title and make up the
-                                    bulk of the panel's content.</p>
-                                <a href="#!" class="card-link">Card link</a>
-                                <a href="#!" class="card-link">Another link</a>
+
+        <div class="row" style="height: 92vh;">
+            <div class="col-md-10">
+                <div class="wrapper pt-3 pb-3">
+                    <!-- CONSOLE -->
+                    <div id="notificationConsole" class="cmd">
+                        <div class="title-bar">WEBSOCKET CONSOLE</div>
+                        <nav class="navbar navbar-expand-lg tool-bar">
+                            <ul>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                        aria-expanded="false">File</a>
+                                    <ul class="dropdown-menu">
+                                        <li id="">
+                                            <a class="dropdown-item current-session">Connect</a>
+                                        </li>
+                                        <li><a class="dropdown-item" href="#">Subscrible</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="#">Edit</a></li>
+                                <li><a href="#">View</a></li>
+                            </ul>
+                        </nav>
+                        <!-- Console Tabs  -->
+                        <nav class="navbar navbar-expand-lg tabs-bar">
+                            <ul id="ul-tabs">
+                                <li id="li-tab-1" class="li-tab" data-textareaid="textarea-session-1"
+                                    title="Main Session">
+                                    <a href="#">Main Session</a>
+                                </li>
+                                <!-- INSERT TAB HERE -->
+                                <li id="add-tab-btn-li" class="add-tab-btn-li new-session">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-plus-circle"
+                                        viewBox="0 0 16 16">
+                                        <path
+                                            d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                        <path
+                                            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                    </svg>
+                                </li>
+                            </ul>
+                        </nav>
+                        <textarea id="textarea-session-1" class="textarea consoleSession" data-selected="true"
+                            readonly>Session Begin [info]</textarea>
+                        <!-- INSERT TEXTAREA HERE -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <!-- NOTIFICATION PANEL -->
+                <div class="row pt-3">
+                    <div class="col-md-12 pb-4 notification-menu">
+                        <!-- NOTIFICATION PANEL -->
+                        <div class="col-md-12">
+                            <div id="collapseNotificationBodyCard" class="card collapse">
+                                <h5 class="card-header h5">NOTIFICATIONS</h5>
+                                <div class="card-body">
+                                    <!-- TOAST'S -->
+                                    <div class="toast notification-toast mb-3" role="alert" aria-live="assertive"
+                                        aria-atomic="true" data-bs-autohide="false" animation>
+                                        <div class="toast-header">
+                                            <img src="..." class="rounded me-2" alt="...">
+                                            <strong class="me-auto">Bootstrap</strong>
+                                            <small>11 mins ago</small>
+                                            <button type="button" class="btn-close" data-bs-dismiss="toast"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="toast-body">
+                                            Hello, world! This is a toast message.
+                                        </div>
+                                    </div>
+
+                                    <div class="toast notification-toast mb-3" role="alert" aria-live="assertive"
+                                        aria-atomic="true" data-bs-autohide="false" animation>
+                                        <div class="toast-header">
+                                            <img src="..." class="rounded me-2" alt="...">
+                                            <strong class="me-auto">Bootstrap</strong>
+                                            <small>11 mins ago</small>
+                                            <button type="button" class="btn-close" data-bs-dismiss="toast"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="toast-body">
+                                            Hello, world! This is a toast message.
+                                        </div>
+                                    </div>
+
+                                    <div class="toast notification-toast mb-3" role="alert" aria-live="assertive"
+                                        aria-atomic="true" data-bs-autohide="false" animation>
+                                        <div class="toast-header">
+                                            <img src="..." class="rounded me-2" alt="...">
+                                            <strong class="me-auto">Bootstrap</strong>
+                                            <small>11 mins ago</small>
+                                            <button type="button" class="btn-close" data-bs-dismiss="toast"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="toast-body">
+                                            Hello, world! This is a toast message.
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div data-include="modal-connection"></div>
-    <div data-include="modal-subscrible"></div>
+        <!-- Call's Toast -->
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div id="liveToast" class="toast call-toast bg-secondary-subtle" role="alert" aria-live="assertive"
+                aria-atomic="true">
+                <div class="toast-header  bg-secondary-subtle">
+                    <img src="..." class="rounded me-2" alt="...">
+                    <strong class="me-auto">Bootstrap</strong>
+                    <small>11 mins ago</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    Hello, world! This is a toast message.
+                    <div class="mt-2 pt-2 border-top">
+                        <button type="button" class="btn btn-primary btn-sm">Take action</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Close</button>
+                    </div>
+                </div>
+            </div>
 
-    <!-- Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-        crossorigin="anonymous"></script>
+            <div id="liveToast" class="toast call-toast  bg-secondary-subtle" role="alert" aria-live="assertive"
+                aria-atomic="true">
+                <div class="toast-header  bg-secondary-subtle">
+                    <img src="..." class="rounded me-2" alt="...">
+                    <strong class="me-auto">Bootstrap</strong>
+                    <small>11 mins ago</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    Hello, world! This is a toast message.
+                    <div class="mt-2 pt-2 border-top">
+                        <button type="button" class="btn btn-primary btn-sm">Take action</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div data-include="modal-connection"></div>
+        <div data-include="modal-subscrible"></div>
+
+        <!-- Bootstrap -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+            crossorigin="anonymous"></script>
 </body>
 
 </html>
