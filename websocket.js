@@ -7,19 +7,20 @@ function createWebSocket(logger) {
       ws: null,
       connected: false,
       channels: [],
-      connect: function(url) {
+      connect: function(url, callbackOpen, callbackMsg) {
          const self = this;
          self.logger.append('info', `websocket.js: Connecting [${url}].`);
          self.ws = new WebSocket(url);
          self.ws.onopen = function() {
             self.logger.append('info', `websocket.js: Connected [${url}].`);
             self.connected = true;
+            callbackOpen();
          };
          self.ws.onmessage = function (evt) {
             self.logger.append('info', `websocket.js: received [${evt.data}].`);
          };
       },
-      subscrible: function(channels) {
+      subscribe: function(channels) {
          const self = this;
          if (self.ws) {
             self.logger.append('info', `websocket.js: Subscribing [${channels}].`);
@@ -28,7 +29,26 @@ function createWebSocket(logger) {
             self.logger.append('info', `websocket.js: Subscribed [${channels}].`);
          }
       },
-
+      unsubscribe: function (channels) {
+         const self = this;
+         if (self.ws) {
+            self.logger.append('info', `websocket.js: unsubscribing [${channels}].`);
+            self.ws.send(JSON.stringify({operation: 'UNSUBSCRIBING', channels}));
+            self.channels.push(channels); // remover do array
+            self.logger.append('info', `websocket.js: unsubscribed [${channels}].`);
+         }
+      },
+      close: function () {
+         const self = this;
+         self.ws.close();
+         self.connected = false;
+         self.logger.append('info', `websocket.js: Disconnecting.`);
+         self.logger.append('info', `websocket.js: Disconnect.`);
+      },
+      isConnected: function () {
+         const self = this;
+         return self.connected;
+      }
    };
    return notificationWebSocket;
 }

@@ -1,23 +1,26 @@
 <!-- Modal HTML -->
-<div class="modal fade modal-subscrible"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade modal-channel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Connection Config</h1>
                 <div data-bs-theme="dark"><button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                  aria-label="Close"></button></div>
+                        aria-label="Close"></button></div>
             </div>
             <div class="modal-body">
                 <form>
                     <div class="mb-3">
                         <label class="col-form-label">Channel*:</label>
-                        <input type="text" class="form-control channels" required="true" placeholder="Channels to subscribe (,) eg: John,Technology,EMR." value="User1,Technology,EMR">
+                        <input type="text" class="form-control channels" required="true"
+                            placeholder="Channels to subscribe (,) eg: John,Technology,EMR."
+                            value="User1,Technology,EMR">
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-success btn-subscribe">Subscrible</button>
+                <button type="button" class="btn btn-success btn-unsubscribe">Unsubscrible</button>
             </div>
         </div>
     </div>

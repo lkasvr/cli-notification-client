@@ -13,7 +13,7 @@ const requestListener = (request, response) => {
     console.log(`server.js: Enter in requestListener -> ${request.url}`);
   if (request.url == '/' || request.url === '/notification' || request.url === '/notification.html') {
         fs.readFile("notification.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}));
-  } else if (request.url === '/modal-subscrible.html') {
+  } else if (request.url === '/modal-channel.html') {
       fs.readFile("modal-subscrible.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}))
   } else if (request.url === '/modal-connection.html') {
         fs.readFile("modal-connection.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}));

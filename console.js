@@ -1,20 +1,21 @@
-function createConsole(template, modalConnection, modalSubscrible) {
+function createConsole(template, modalConnection, modalChannel) {
     let consoler = {
-
         template,
         modalConnection,
-        modalSubscrible,
+        modalChannel,
         sessions: new Map(),
-
         init: function() {
             const self = this;
 
             function closeTab(textArea, tab) {
                 const i = self.template.find('.li-tab').index(tab);
-                if (self.template.find("textarea[data-selected='true']").attr('id') === textArea.attr('id')) {
+                const textareaSelectedID = self.template.find("textarea[data-selected='true']").attr('id');
+                if (textareaSelectedID === textArea.attr('id')) {
                     const tabPrevious = self.template.find('.li-tab')[i-1]
                     tabPrevious.click();
                 }
+                const session = self.sessions.get(textareaSelectedID);
+                if (session.ws.isConnected()) session.ws.close();
                 textArea.remove();
                 tab.remove();
             }
@@ -27,54 +28,96 @@ function createConsole(template, modalConnection, modalSubscrible) {
 
                 if (oldTextarea) {
                     oldTextarea.attr('data-selected', false)
-                    oldTextarea.addClass('hiddenTextarea');
+                    oldTextarea.addClass('hiddenElement');
                 }
 
                 currentTextarea.attr('data-selected', true);
-                currentTextarea.removeClass('hiddenTextarea');
+                currentTextarea.removeClass('hiddenElement');
+
+                toggleConnection();
             }
 
             /* Event Handling Routine - Add Tab Session */
             function addTab(sessionName) {
                 const tabQTY = self.template.find('.li-tab').length;
                 const lastLiElement = self.template.find('.li-tab')[tabQTY - 1];
-                const numId = parseInt(lastLiElement.id.slice(7)) + 1;
+                const numId = parseInt(!lastLiElement ? 0 : lastLiElement.id.slice(7)) + 1;
 
                 const li_newTab_id = `li-tab-${numId}`;
                 const li_tab = jQuery(`
-                <li id="${li_newTab_id}" class="li-tab" data-textareaid="textarea-session-${numId}" title="${!sessionName ? `New Session ${numId}.` : `Session ${sessionName}.`}">
+                <li id="${li_newTab_id}" class="li-tab" data-textareaid="textarea-session-${numId}" title="${!sessionName ? `New Session ${numId}.` : `Session ${sessionName}.`}" role="button">
                     <a href="#">${!sessionName ? `New Session ${numId}` : sessionName}</a>
-                    <button id="btn-close-tab-${numId}" type="button" class="btn-close btn-close-white" aria-label="Close" ></button >
+                    ${!lastLiElement ? '' : `<button id="btn-close-tab-${numId}" type="button" class="btn-close btn-close-white" aria-label="Close" ></button >`}
                 </li>
                 `);
 
-                const lastTextareaElement = self.template.find(`#${self.template.find('.consoleSession')[0].getAttribute('id')}`);
+                const lastTextareaElement = self.template.find('textarea[data-selected="true"]');
                 lastTextareaElement.attr('data-selected', false);
-                lastTextareaElement.addClass('hiddenTextarea');
+                lastTextareaElement.addClass('hiddenElement');
 
                 const newTextarea = jQuery(`<textarea id="textarea-session-${numId}" class="textarea consoleSession" data-selected="true" readonly>${!sessionName ? `New Session ${numId}.` : `Session ${sessionName}.`}</textarea>`);
 
-                self.template.find(`#${lastLiElement.id}`).after(li_tab);
+                self.template.find('#add-tab-btn-li').before(li_tab);
+
                 self.template.find(`#btn-close-tab-${numId}`).click(function () { closeTab(newTextarea, li_tab) });
                 self.template.find(`#${li_newTab_id}`).click(selectedTextarea);
 
                 self.template.find('.tabs-bar').after(newTextarea);
+
+                const logger = createLogger(newTextarea, sessionName);
+                const ws = createWebSocket(logger);
+                self.sessions.set(newTextarea.attr('id'), { sout: newTextarea, ws: ws, logger: logger });
+                toggleConnection();
             }
 
             function connect(textArea, url) {
-                const numId = textArea.attr('id').slice(17);
+                const textareaID = textArea.attr('id');
+                const numId = textareaID.slice(17);
                 const sessionName = self.template.find(`#li-tab-${numId}>a`).html()
 
                 const logger = createLogger(textArea, sessionName);
                 const ws = createWebSocket(logger);
-                ws.connect(url);
+                ws.connect(url, () => toggleConnection());
 
-                self.sessions.set(textArea.attr('id'), { sout: textArea, ws: ws, logger: logger });
+                self.sessions.set(textareaID, { sout: textArea, ws: ws, logger: logger });
+            }
+
+            /* Event Handling Routine - Toggle Button Connection */
+            function toggleConnection() {
+                const session = self.sessions.get(self.template.find('textarea[data-selected="true"]').attr('id'));
+                const liConnectBtn = self.template.find("#li-connect-btn");
+                const liDisonnectBtn = self.template.find("#li-disconnect-btn");
+                const liSubscribeSession = self.template.find('.li-subscribe-session');
+                const liUnsubscribeSession = self.template.find('.li-unsubscribe-session');
+
+                if (session.ws.isConnected()) {
+                    liConnectBtn.addClass('hiddenElement');
+                    liDisonnectBtn.removeClass('hiddenElement');
+                    liSubscribeSession.removeClass('hiddenElement');
+                    liUnsubscribeSession.removeClass('hiddenElement');
+                } else {
+                   liConnectBtn.removeClass('hiddenElement');
+                   liDisonnectBtn.addClass('hiddenElement');
+                   liSubscribeSession.addClass('hiddenElement');
+                   liUnsubscribeSession.addClass('hiddenElement');
+                }
+            }
+
+            /* Event Handling Routine - Show Alert */
+            function callAlert(msg, type = 'primary', delay = 5) {
+                const alertComponent = jQuery(`<div class="alert alert-${type}" role="alert"> ${msg}</div>`);
+                jQuery('#liveAlertPlaceholder').append(alertComponent);
+                setTimeout(() => alertComponent.remove(), delay*1000)
             }
 
             // Event Handling Function's
+            // Connection Operation's
             self.modalConnection.find('.btn-connection').click(function () {
-                const url =  self.modalConnection.find('#host-name').val();
+                const currentTextarea = self.template.find("textarea[data-selected='true']");
+                const session = self.sessions.get(currentTextarea.attr('id'));
+                if (session.ws.isConnected()) return callAlert('It is only possible to connect if there is no connection.', type = 'warning');
+
+                const url = self.modalConnection.find('#host-name').val();
                 self.modalConnection.modal('hide');
                 connect(self.template.find('textarea[data-selected="true"]'), url);
             });
@@ -98,25 +141,65 @@ function createConsole(template, modalConnection, modalSubscrible) {
                 self.modalConnection.find('.btn-new-connection').hide();
                 self.modalConnection.modal('show');
             });
+            
+            self.template.find("#li-disconnect-btn").click(function () {
+                const session = self.sessions.get(self.template.find("textarea[data-selected='true']").attr('id'));
+                if (!session.ws.isConnected()) return callAlert('It is only possible to disconnect if there is a connection.', type = 'warning');
+                session.ws.close();
+                toggleConnection();
+            });
+            /****/
 
-            self.template.find('.subscrible-session').click(function () {
-                self.modalSubscrible.modal('show');
+            // Subscribe Operation's
+            self.template.find('.subscribe-session').click(() => {
+                const currentTextarea = self.template.find("textarea[data-selected='true']");
+                const session = self.sessions.get(currentTextarea.attr('id'));
+                if (!session.ws.isConnected()) return callAlert('It is only allowed to subscribe on some channels when connected.', type = 'warning');
+                self.modalChannel.find('.btn-subscribe').removeClass('hiddenElement');
+                self.modalChannel.find('.btn-unsubscribe').addClass('hiddenElement');
+                self.modalChannel.modal('show');
             });
 
-            self.modalSubscrible.find('.btn-subscribe').click(function () {
-                const channelsText =  self.modalSubscrible.find('.channels').val();
-
+            self.modalChannel.find('.btn-subscribe').click(function () {
+                const channelsText =  self.modalChannel.find('.channels').val();
                 if (channelsText &&  channelsText.length > 0) {
-                    const textAreaCurrent = self.template.find("textarea[data-selected='true']");
-                    const session = self.sessions.get(textAreaCurrent.attr('id'));
+                    const currentTextarea = self.template.find("textarea[data-selected='true']");
+                    const session = self.sessions.get(currentTextarea.attr('id'));
                     const channels = channelsText.split(',');
-                    session.ws.subscrible(channels);
+                    session.ws.subscribe(channels);
+                    return;
                 }
-
+                callAlert('It is necessary to fill in the description of the channel for subscribing.', 'warning');
             });
+            /****/
+
+            // Unsubscribe Operation's
+            self.template.find('.unsubscribe-session').click(function () {
+                const currentTextarea = self.template.find("textarea[data-selected='true']");
+                const session = self.sessions.get(currentTextarea.attr('id'));
+                if (!session.ws.isConnected()) return callAlert('It is only allowed to unsubscribe on some channels when connected.', type = 'warning');
+                self.modalChannel.find('.btn-subscribe').addClass('hiddenElement');
+                self.modalChannel.find('.btn-unsubscribe').removeClass('hiddenElement');
+                self.modalChannel.modal('show');
+            });
+
+            self.modalChannel.find('.btn-unsubscribe').click(function () {
+                const channelsText = self.modalChannel.find('.channels').val();
+                if (channelsText &&  channelsText.length > 0) {
+                    const currentTextarea = self.template.find("textarea[data-selected='true']");
+                    const session = self.sessions.get(currentTextarea.attr('id'));
+                    const channels = channelsText.split(',');
+                    session.ws.unsubscribe(channels);
+                    return;
+                }
+                callAlert('It is necessary to fill in the description of the channel for unsubscribing.', 'warning');
+            });
+            /****/
 
             self.template.find('.li-tab').click(selectedTextarea);
 
+            // init() Execution's
+            addTab('Main Session');
         }
     };
     consoler.init();
