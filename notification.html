@@ -17,6 +17,7 @@
         crossorigin="anonymous"></script>
 
     <!-- APP JS -->
+    <script src="toasts.js"></script>
     <script src="websocket.js"></script>
     <script src="console.js"></script>
     <script src="logger.js"></script>
@@ -33,7 +34,6 @@
         jQuery.noConflict();
         let notification = null;
         jQuery(($) => {
-
             const loads = [];
             const includes = $('[data-include]');
             $.each(includes, function () {
@@ -42,13 +42,24 @@
                 const promise = new Promise((resolve, reject) => div.load(file, resolve));
                 loads.push(promise);
             });
-            Promise.all(loads).then(() => createConsole($("#notificationConsole"), $('.modal-connection'), $('.modal-channel')));
+            Promise.all(loads).then(() => createConsole($("#notificationConsole"), $('.modal-connection'), $('.modal-channel'), $('.notification-panel-toasts')));
 
             // To remove after Implemantations
-            $('.btn-toasts').click(() => $('.notification-toast').toast('show'));
-            $('.btn-toasts-test').click(() => $('.call-toast').toast('show'));
+            $('.btn-notification-toasts').click(function () {
+                const consoleCol = $('.console-col')
+                const notificationPanelCol = $('.notification-panel-col');
+                //debugger
+                if (notificationPanelCol.hasClass('hiddenElement')) {
+                    consoleCol.removeClass('col-md-12');
+                    consoleCol.addClass('col-md-10');
+                    notificationPanelCol.removeClass('hiddenElement');
+                } else {
+                    consoleCol.removeClass('col-md-10');
+                    consoleCol.addClass('col-md-12');
+                    notificationPanelCol.addClass('hiddenElement');
+                }
+            });
         });
-
     </script>
 </head>
 
@@ -61,40 +72,23 @@
                     <div class="title-bar-header px-2">
                         <div><!-- To flex space-between --></div>
                         NOTIFICATION PoC
-
                         <!-- BUTTON GROUP PANEL -->
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-light btn-toasts-test" data-bs-toggle="collapse"
-                                data-bs-target="#collapseNotificationBodyCard" aria-expanded="false"
-                                aria-controls="collapseNotificationBodyCard">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-bell" viewBox="0 0 16 16">
-                                    <path
-                                        d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z">
-                                    </path>
-                                </svg>
-                                <span class="visually-hidden">Button</span>
-                            </button>
-
-                            <button type="button" class="btn btn-light btn-toasts" data-bs-toggle="collapse"
-                                data-bs-target="#collapseNotificationBodyCard" aria-expanded="false"
-                                aria-controls="collapseNotificationBodyCard">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-bell" viewBox="0 0 16 16">
-                                    <path
-                                        d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z">
-                                    </path>
-                                </svg>
-                                <span class="visually-hidden">Button</span>
-                            </button>
-                        </div>
+                        <button type="button" class="btn btn-light btn-notification-toasts">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-bell" viewBox="0 0 16 16">
+                                <path
+                                    d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z">
+                                </path>
+                            </svg>
+                            <span class="visually-hidden">Button</span>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="row" style="height: 92vh;">
-            <div class="col-md-10">
+            <div class="col-md-12 console-col">
                 <div class="wrapper pt-3 pb-3">
                     <!-- CONSOLE -->
                     <div id="notificationConsole" class="cmd">
@@ -125,7 +119,7 @@
                                 <li><a href="#">View</a></li>
                             </ul>
                         </nav>
-                        <!-- Console Tabs  -->
+                        <!-- CONSOLE TABS  -->
                         <nav class="navbar navbar-expand-lg tabs-bar">
                             <ul id="ul-tabs">
                                 <!-- INSERT TAB HERE -->
@@ -144,58 +138,14 @@
                 </div>
             </div>
 
-            <div class="col-md-2">
-                <!-- NOTIFICATION PANEL -->
+            <div class="col-12 col-md-2 notification-panel-col hiddenElement">
                 <div class="row pt-3">
                     <div class="col-md-12 pb-4 notification-menu">
-                        <!-- NOTIFICATION PANEL -->
-                        <div class="col-md-12">
-                            <div id="collapseNotificationBodyCard" class="card collapse">
+                        <div class="col-md-12" style="width: 100%;">
+                            <!-- NOTIFICATION PANEL -->
+                            <div class="card">
                                 <h5 class="card-header h5">NOTIFICATIONS</h5>
-                                <div class="card-body">
-                                    <!-- TOAST'S -->
-                                    <div class="toast notification-toast mb-3" role="alert" aria-live="assertive"
-                                        aria-atomic="true" data-bs-autohide="false" animation>
-                                        <div class="toast-header">
-                                            <img src="..." class="rounded me-2" alt="...">
-                                            <strong class="me-auto">Bootstrap</strong>
-                                            <small>11 mins ago</small>
-                                            <button type="button" class="btn-close" data-bs-dismiss="toast"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="toast-body">
-                                            Hello, world! This is a toast message.
-                                        </div>
-                                    </div>
-
-                                    <div class="toast notification-toast mb-3" role="alert" aria-live="assertive"
-                                        aria-atomic="true" data-bs-autohide="false" animation>
-                                        <div class="toast-header">
-                                            <img src="..." class="rounded me-2" alt="...">
-                                            <strong class="me-auto">Bootstrap</strong>
-                                            <small>11 mins ago</small>
-                                            <button type="button" class="btn-close" data-bs-dismiss="toast"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="toast-body">
-                                            Hello, world! This is a toast message.
-                                        </div>
-                                    </div>
-
-                                    <div class="toast notification-toast mb-3" role="alert" aria-live="assertive"
-                                        aria-atomic="true" data-bs-autohide="false" animation>
-                                        <div class="toast-header">
-                                            <img src="..." class="rounded me-2" alt="...">
-                                            <strong class="me-auto">Bootstrap</strong>
-                                            <small>11 mins ago</small>
-                                            <button type="button" class="btn-close" data-bs-dismiss="toast"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="toast-body">
-                                            Hello, world! This is a toast message.
-                                        </div>
-                                    </div>
-                                </div>
+                                <div class="card-body notification-panel-toasts "></div>
                             </div>
                         </div>
                     </div>
@@ -203,42 +153,8 @@
             </div>
         </div>
 
-        <!-- Call's Toast -->
-        <div class="toast-container position-fixed top-0 end-0 p-3">
-            <div id="liveToast" class="toast call-toast bg-secondary-subtle" role="alert" aria-live="assertive"
-                aria-atomic="true">
-                <div class="toast-header  bg-secondary-subtle">
-                    <img src="..." class="rounded me-2" alt="...">
-                    <strong class="me-auto">Bootstrap</strong>
-                    <small>11 mins ago</small>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    Hello, world! This is a toast message.
-                    <div class="mt-2 pt-2 border-top">
-                        <button type="button" class="btn btn-primary btn-sm">Take action</button>
-                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Close</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="liveToast" class="toast call-toast  bg-secondary-subtle" role="alert" aria-live="assertive"
-                aria-atomic="true">
-                <div class="toast-header  bg-secondary-subtle">
-                    <img src="..." class="rounded me-2" alt="...">
-                    <strong class="me-auto">Bootstrap</strong>
-                    <small>11 mins ago</small>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    Hello, world! This is a toast message.
-                    <div class="mt-2 pt-2 border-top">
-                        <button type="button" class="btn btn-primary btn-sm">Take action</button>
-                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Call's All Application  Toast -->
+        <div id="app-toasts" class="toast-container position-fixed top-0 end-0 p-3"></div>
 
         <!-- Modal -->
         <div data-include="modal-connection"></div>

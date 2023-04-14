@@ -1,9 +1,9 @@
-function createWebSocket(logger) {
-   if (!("WebSocket" in window)) {
-      alert("WebSocket NOT supported by your Browser!");
-   }
+function createWebSocket(logger, toasts, notificationID) {
+   if (!("WebSocket" in window)) alert("WebSocket NOT supported by your Browser!");
    let notificationWebSocket = {
       logger,
+      toasts,
+      notificationID,
       ws: null,
       connected: false,
       channels: [],
@@ -16,9 +16,12 @@ function createWebSocket(logger) {
             self.connected = true;
             callbackOpen();
          };
-         self.ws.onmessage = function (evt) {
-            self.logger.append('info', `websocket.js: received [${evt.data}].`);
-         };
+         self.ws.onmessage = (evt) => {
+            const data = JSON.parse(evt.data);
+            self.logger.append('info', `websocket.js: received [${data.content}].`);
+            if (data.operation !== 'SUBSCRIBING') return toasts.globalAppNotify(data);
+            toasts.notificationPanelNotify(data, notificationID);
+         }
       },
       subscribe: function(channels) {
          const self = this;

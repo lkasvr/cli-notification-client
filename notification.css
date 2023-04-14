@@ -190,10 +190,6 @@ body {
     font-size: 1.1rem;
 }
 
-.hiddenElement {
-    display: none;
-}
-
 a.nav-link.dropdown-toggle:after {
     content: none;
 }
@@ -219,11 +215,11 @@ a.nav-link.dropdown-toggle:after {
     opacity: 0.9;
 }
 
-.tabbable .nav-tabs .nav-link {
-    white-space: nowrap;
+.scrollable {
+    overflow-y: auto;
+    max-height: 81vh;
 }
-.navbar-brand, .navbar-nav > li > a {
-    line-height: 100px;
-    height: 75px;
-    padding-top: 0px;
+
+.hiddenElement {
+    display: none !important;
 }
