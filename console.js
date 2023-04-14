@@ -1,8 +1,9 @@
-function createConsole(template, modalConnection, modalChannel) {
-    let consoler = {
+function createConsole(template, modalConnection, modalChannel, notificationPanel) {
+    const consoler = {
         template,
         modalConnection,
         modalChannel,
+        notificationPanel,
         sessions: new Map(),
         init: function() {
             const self = this;
@@ -24,15 +25,19 @@ function createConsole(template, modalConnection, modalChannel) {
             function selectedTextarea() {
                 const numId = parseInt(jQuery(this).attr('id').slice(7));
                 const oldTextarea = self.template.find("textarea[data-selected='true']");
+                const oldSession = self.sessions.get(oldTextarea.attr('id'));
                 const currentTextarea = self.template.find(`#textarea-session-${numId}`);
+                const currentSession = self.sessions.get(currentTextarea.attr('id'));
 
                 if (oldTextarea) {
                     oldTextarea.attr('data-selected', false)
                     oldTextarea.addClass('hiddenElement');
+                    self.notificationPanel.find(`#${oldSession.notificationPanelID}`).addClass('hiddenElement');
                 }
 
                 currentTextarea.attr('data-selected', true);
                 currentTextarea.removeClass('hiddenElement');
+                self.notificationPanel.find(`#${currentSession.notificationPanelID}`).removeClass('hiddenElement');
 
                 toggleConnection();
             }
@@ -42,11 +47,13 @@ function createConsole(template, modalConnection, modalChannel) {
                 const tabQTY = self.template.find('.li-tab').length;
                 const lastLiElement = self.template.find('.li-tab')[tabQTY - 1];
                 const numId = parseInt(!lastLiElement ? 0 : lastLiElement.id.slice(7)) + 1;
+                const notificationPanelID = `notification-panel-${numId}`;
+                sessionName = sessionName ? sessionName : `New Session ${numId}` ;
 
                 const li_newTab_id = `li-tab-${numId}`;
                 const li_tab = jQuery(`
-                <li id="${li_newTab_id}" class="li-tab" data-textareaid="textarea-session-${numId}" title="${!sessionName ? `New Session ${numId}.` : `Session ${sessionName}.`}" role="button">
-                    <a href="#">${!sessionName ? `New Session ${numId}` : sessionName}</a>
+                <li id="${li_newTab_id}" class="li-tab" data-textareaid="textarea-session-${numId}" title="${sessionName}" role="button">
+                    <a href="#">${sessionName}</a>
                     ${!lastLiElement ? '' : `<button id="btn-close-tab-${numId}" type="button" class="btn-close btn-close-white" aria-label="Close" ></button >`}
                 </li>
                 `);
@@ -55,7 +62,10 @@ function createConsole(template, modalConnection, modalChannel) {
                 lastTextareaElement.attr('data-selected', false);
                 lastTextareaElement.addClass('hiddenElement');
 
-                const newTextarea = jQuery(`<textarea id="textarea-session-${numId}" class="textarea consoleSession" data-selected="true" readonly>${!sessionName ? `New Session ${numId}.` : `Session ${sessionName}.`}</textarea>`);
+                const lastSession = self.sessions.get(lastTextareaElement.attr('id'));
+                if(lastSession) self.notificationPanel.find(`#${lastSession.notificationPanelID}`).addClass('hiddenElement');
+
+                const newTextarea = jQuery(`<textarea id="textarea-session-${numId}" class="textarea consoleSession" data-selected="true" readonly>${sessionName}</textarea>`);
 
                 self.template.find('#add-tab-btn-li').before(li_tab);
 
@@ -63,23 +73,18 @@ function createConsole(template, modalConnection, modalChannel) {
                 self.template.find(`#${li_newTab_id}`).click(selectedTextarea);
 
                 self.template.find('.tabs-bar').after(newTextarea);
-
+                const toasts = createToasts(jQuery('#app-toasts'), self.notificationPanel);
                 const logger = createLogger(newTextarea, sessionName);
-                const ws = createWebSocket(logger);
-                self.sessions.set(newTextarea.attr('id'), { sout: newTextarea, ws: ws, logger: logger });
+                const ws = createWebSocket(logger, toasts, `notification-panel-${numId}`);
+                self.notificationPanel.append(`<div id="${notificationPanelID}" class="scrollable"></div>`);
+                self.sessions.set(newTextarea.attr('id'), { sout: newTextarea, ws: ws, logger: logger, notificationPanelID });
                 toggleConnection();
             }
 
             function connect(textArea, url) {
                 const textareaID = textArea.attr('id');
-                const numId = textareaID.slice(17);
-                const sessionName = self.template.find(`#li-tab-${numId}>a`).html()
-
-                const logger = createLogger(textArea, sessionName);
-                const ws = createWebSocket(logger);
+                const ws = self.sessions.get(textareaID).ws;
                 ws.connect(url, () => toggleConnection());
-
-                self.sessions.set(textareaID, { sout: textArea, ws: ws, logger: logger });
             }
 
             /* Event Handling Routine - Toggle Button Connection */
@@ -167,6 +172,7 @@ function createConsole(template, modalConnection, modalChannel) {
                     const session = self.sessions.get(currentTextarea.attr('id'));
                     const channels = channelsText.split(',');
                     session.ws.subscribe(channels);
+                     self.modalChannel.modal('hide');
                     return;
                 }
                 callAlert('It is necessary to fill in the description of the channel for subscribing.', 'warning');
