@@ -19,7 +19,9 @@ function createWebSocket(logger, toasts, dataSession) {
          self.ws.onmessage = (evt) => {
             const data = JSON.parse(evt.data);
             self.logger.append('info', `websocket.js: received [${data.content}].`);
-            if (data.operation !== 'SUBSCRIBING') return toasts.globalAppNotify(data, dataSession);
+            if (data.operation !== 'SUBSCRIBING') {
+               toasts.globalAppNotify(data, dataSession);
+            }
             toasts.notificationPanelNotify(data, dataSession);
          }
       },

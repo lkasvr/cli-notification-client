@@ -28,7 +28,7 @@ function createToasts(appToasts, notificationPanel) {
       notificationPanelNotify: function (data, {notificationPanelID}) {
          const self = this;
          const newNotificationToasts = jQuery(`
-           <div id="${data.id}" class="toast notification-toast mb-3" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false" animation>
+           <div id="${data.id}" class="toast notification-toast mb-3 fade show"" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false" animation>
              <div class="toast-header">
                <img src="..." class="rounded me-2" alt="...">
                <strong class="me-auto">${data.title}</strong>

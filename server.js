@@ -14,7 +14,7 @@ const requestListener = (request, response) => {
     if (request.url == '/' || request.url === '/notification' || request.url === '/notification.html') {
         fs.readFile("notification.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}));
     } else if (request.url === '/modal-channel.html') {
-        fs.readFile("modal-subscrible.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}))
+        fs.readFile("modal-channel.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}))
     } else if (request.url === '/modal-connection.html') {
         fs.readFile("modal-connection.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}));
     } else if (request.url === '/websocket.js') {
@@ -23,6 +23,8 @@ const requestListener = (request, response) => {
         fs.readFile("console.js", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/javascript'}));
     } else if (request.url === '/logger.js') {
         fs.readFile("logger.js", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/javascript'}));
+    } else if (request.url === '/toasts.js') {
+        fs.readFile("toasts.js", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/javascript'}));
     } else if (request.url === '/notification.css') {
         fs.readFile("notification.css", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/css'}));
     } else {
