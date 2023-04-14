@@ -75,7 +75,7 @@ function createConsole(template, modalConnection, modalChannel, notificationPane
                 self.template.find('.tabs-bar').after(newTextarea);
                 const toasts = createToasts(jQuery('#app-toasts'), self.notificationPanel);
                 const logger = createLogger(newTextarea, sessionName);
-                const ws = createWebSocket(logger, toasts, `notification-panel-${numId}`);
+                const ws = createWebSocket(logger, toasts, {notificationPanelID, sessionName});
                 self.notificationPanel.append(`<div id="${notificationPanelID}" class="scrollable"></div>`);
                 self.sessions.set(newTextarea.attr('id'), { sout: newTextarea, ws: ws, logger: logger, notificationPanelID });
                 toggleConnection();

@@ -4,13 +4,13 @@ function createToasts(appToasts, notificationPanel) {
       notificationPanel,
       connected: false,
       toastsByTabs: [],
-      globalAppNotify: function (data) {
+      globalAppNotify: function (data, {sessionName}) {
          const self = this;
          const newGlobalToast = jQuery(`
            <div id="${data.id}" class="toast call-toast bg-secondary-subtle" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
              <div class="toast-header  bg-secondary-subtle">
                <img src="..." class="rounded me-2" alt="...">
-               <strong class="me-auto">${`` + data.title}</strong>
+               <strong class="me-auto">${sessionName + ' ' + data.title}</strong>
                <small>11 mins ago</small>
                <button type="button" class="btn-close btn-close-global-toast" data-bs-dismiss="toast" aria-label="Close"></button>
              </div>
@@ -25,13 +25,13 @@ function createToasts(appToasts, notificationPanel) {
          self.appToasts.prepend(newGlobalToast);
          self.appToasts.find(`#${data.id}`).toast("show");
       },
-      notificationPanelNotify: function (data, notificationID) {
+      notificationPanelNotify: function (data, {notificationPanelID}) {
          const self = this;
          const newNotificationToasts = jQuery(`
            <div id="${data.id}" class="toast notification-toast mb-3" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false" animation>
              <div class="toast-header">
                <img src="..." class="rounded me-2" alt="...">
-               <strong class="me-auto">${`` + data.title}</strong>
+               <strong class="me-auto">${data.title}</strong>
                <small>11 mins ago</small>
                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
              </div>
@@ -40,7 +40,7 @@ function createToasts(appToasts, notificationPanel) {
              </div>
            </div>
          `);
-         self.notificationPanel.find(`#${notificationID}`).prepend(newNotificationToasts);
+         self.notificationPanel.find(`#${notificationPanelID}`).prepend(newNotificationToasts);
          self.notificationPanel.find(`#${data.id}`).toast("show");
       }
    };
