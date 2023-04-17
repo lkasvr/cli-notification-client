@@ -1,18 +1,19 @@
-function createConsole(template, modalConnection, modalChannel, notificationPanel) {
+function createConsole(template, modalConnection, modalChannel, modalSendNotifications, notificationPanel) {
     const consoler = {
         template,
         modalConnection,
         modalChannel,
+        modalSendNotifications,
         notificationPanel,
         sessions: new Map(),
-        init: function() {
+        init: function () {
             const self = this;
 
             function closeTab(textArea, tab) {
                 const i = self.template.find('.li-tab').index(tab);
                 const textareaSelectedID = self.template.find("textarea[data-selected='true']").attr('id');
                 if (textareaSelectedID === textArea.attr('id')) {
-                    const tabPrevious = self.template.find('.li-tab')[i-1]
+                    const tabPrevious = self.template.find('.li-tab')[i - 1]
                     tabPrevious.click();
                 }
                 const session = self.sessions.get(textareaSelectedID);
@@ -48,7 +49,7 @@ function createConsole(template, modalConnection, modalChannel, notificationPane
                 const lastLiElement = self.template.find('.li-tab')[tabQTY - 1];
                 const numId = parseInt(!lastLiElement ? 0 : lastLiElement.id.slice(7)) + 1;
                 const notificationPanelID = `notification-panel-${numId}`;
-                sessionName = sessionName ? sessionName : `New Session ${numId}` ;
+                sessionName = sessionName ? sessionName : `New Session ${numId}`;
 
                 const li_newTab_id = `li-tab-${numId}`;
                 const li_tab = jQuery(`
@@ -63,7 +64,7 @@ function createConsole(template, modalConnection, modalChannel, notificationPane
                 lastTextareaElement.addClass('hiddenElement');
 
                 const lastSession = self.sessions.get(lastTextareaElement.attr('id'));
-                if(lastSession) self.notificationPanel.find(`#${lastSession.notificationPanelID}`).addClass('hiddenElement');
+                if (lastSession) self.notificationPanel.find(`#${lastSession.notificationPanelID}`).addClass('hiddenElement');
 
                 const newTextarea = jQuery(`<textarea id="textarea-session-${numId}" class="textarea consoleSession" data-selected="true" readonly>${sessionName}</textarea>`);
 
@@ -75,7 +76,7 @@ function createConsole(template, modalConnection, modalChannel, notificationPane
                 self.template.find('.tabs-bar').after(newTextarea);
                 const toasts = createToasts(jQuery('#app-toasts'), self.notificationPanel);
                 const logger = createLogger(newTextarea, sessionName);
-                const ws = createWebSocket(logger, toasts, {notificationPanelID, sessionName});
+                const ws = createWebSocket(logger, toasts, { notificationPanelID, sessionName });
                 self.notificationPanel.append(`<div id="${notificationPanelID}" class="scrollable"></div>`);
                 self.sessions.set(newTextarea.attr('id'), { sout: newTextarea, ws: ws, logger: logger, notificationPanelID });
                 toggleConnection();
@@ -94,17 +95,20 @@ function createConsole(template, modalConnection, modalChannel, notificationPane
                 const liDisonnectBtn = self.template.find("#li-disconnect-btn");
                 const liSubscribeSession = self.template.find('.li-subscribe-session');
                 const liUnsubscribeSession = self.template.find('.li-unsubscribe-session');
+                const liSendNotificaiton = self.template.find('li-send-notifications');
 
                 if (session.ws.isConnected()) {
                     liConnectBtn.addClass('hiddenElement');
                     liDisonnectBtn.removeClass('hiddenElement');
                     liSubscribeSession.removeClass('hiddenElement');
                     liUnsubscribeSession.removeClass('hiddenElement');
+                    liSendNotificaiton.removeClass('hiddenElement');
                 } else {
-                   liConnectBtn.removeClass('hiddenElement');
-                   liDisonnectBtn.addClass('hiddenElement');
-                   liSubscribeSession.addClass('hiddenElement');
-                   liUnsubscribeSession.addClass('hiddenElement');
+                    liConnectBtn.removeClass('hiddenElement');
+                    liDisonnectBtn.addClass('hiddenElement');
+                    liSubscribeSession.addClass('hiddenElement');
+                    liUnsubscribeSession.addClass('hiddenElement');
+                    liSendNotificaiton.addClass('hiddenElement');
                 }
             }
 
@@ -112,7 +116,7 @@ function createConsole(template, modalConnection, modalChannel, notificationPane
             function callAlert(msg, type = 'primary', delay = 5) {
                 const alertComponent = jQuery(`<div class="alert alert-${type}" role="alert"> ${msg}</div>`);
                 jQuery('#liveAlertPlaceholder').append(alertComponent);
-                setTimeout(() => alertComponent.remove(), delay*1000)
+                setTimeout(() => alertComponent.remove(), delay * 1000)
             }
 
             // Event Handling Function's
@@ -146,7 +150,7 @@ function createConsole(template, modalConnection, modalChannel, notificationPane
                 self.modalConnection.find('.btn-new-connection').hide();
                 self.modalConnection.modal('show');
             });
-            
+
             self.template.find("#li-disconnect-btn").click(function () {
                 const session = self.sessions.get(self.template.find("textarea[data-selected='true']").attr('id'));
                 if (!session.ws.isConnected()) return callAlert('It is only possible to disconnect if there is a connection.', type = 'warning');
@@ -166,13 +170,13 @@ function createConsole(template, modalConnection, modalChannel, notificationPane
             });
 
             self.modalChannel.find('.btn-subscribe').click(function () {
-                const channelsText =  self.modalChannel.find('.channels').val();
-                if (channelsText &&  channelsText.length > 0) {
+                const channelsText = self.modalChannel.find('.channels').val();
+                if (channelsText && channelsText.length > 0) {
                     const currentTextarea = self.template.find("textarea[data-selected='true']");
                     const session = self.sessions.get(currentTextarea.attr('id'));
                     const channels = channelsText.split(',');
                     session.ws.subscribe(channels);
-                     self.modalChannel.modal('hide');
+                    self.modalChannel.modal('hide');
                     return;
                 }
                 callAlert('It is necessary to fill in the description of the channel for subscribing.', 'warning');
@@ -191,7 +195,7 @@ function createConsole(template, modalConnection, modalChannel, notificationPane
 
             self.modalChannel.find('.btn-unsubscribe').click(function () {
                 const channelsText = self.modalChannel.find('.channels').val();
-                if (channelsText &&  channelsText.length > 0) {
+                if (channelsText && channelsText.length > 0) {
                     const currentTextarea = self.template.find("textarea[data-selected='true']");
                     const session = self.sessions.get(currentTextarea.attr('id'));
                     const channels = channelsText.split(',');
@@ -199,6 +203,31 @@ function createConsole(template, modalConnection, modalChannel, notificationPane
                     return;
                 }
                 callAlert('It is necessary to fill in the description of the channel for unsubscribing.', 'warning');
+            });
+            /****/
+
+            // Send Notification Operation's
+
+            self.template.find('.li-send-notifications').click(function () {
+                self.modalSendNotifications.modal('show');
+            });
+
+            self.modalSendNotifications.find('.btn-send-notification').click(function () {
+                self.modalSendNotifications.find('.send-notification').submit();
+            });
+
+            self.modalSendNotifications.find('.send-notification').submit(function (event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                const validationMsg = self.modalSendNotifications.find('.textarea-validation-msg');
+                validationMsg.html('');
+                try {
+                    const url = formData.get('server-URL');
+                    const data = JSON.parse(editor.getValue());
+                    console.log(url, data)
+                    jQuery.ajax({type: 'POST', url, data, success: function () { console.log('success') }});
+                } catch (e) {validationMsg.html(e.message); }
+                return;
             });
             /****/
 

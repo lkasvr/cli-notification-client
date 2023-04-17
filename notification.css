@@ -220,6 +220,27 @@ a.nav-link.dropdown-toggle:after {
     max-height: 81vh;
 }
 
+.notification-modal-content {
+    height: 800px;
+    width: 800px;
+}
+
+form.send-notification {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+#code-editor {
+    height: 40%;
+    width: 100%;
+}
+
+.modal-footer {
+    z-index: 9999;
+}
+
 .hiddenElement {
     display: none !important;
 }

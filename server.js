@@ -17,6 +17,8 @@ const requestListener = (request, response) => {
         fs.readFile("modal-channel.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}))
     } else if (request.url === '/modal-connection.html') {
         fs.readFile("modal-connection.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}));
+    } else if (request.url === '/modal-send-notifications.html') {
+        fs.readFile("/modal-send-notifications.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}));
     } else if (request.url === '/websocket.js') {
         fs.readFile("websocket.js", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/javascript'}));
     } else if (request.url === '/console.js') {

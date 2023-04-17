@@ -1,0 +1,41 @@
+<!-- Modal HTML -->
+<div class="modal fade modal-send-notifications" tabindex="-1" aria-labelledby="modalSendNotification"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content notification-modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalSendNotification">Notification JSON Config</h1>
+        <div data-bs-theme="dark"><button type="button" class="btn-close" data-bs-dismiss="modal"
+            aria-label="Close"></button></div>
+      </div>
+      <div class="modal-body">
+        <form class="send-notification">
+          <div style="width: 100%;">
+            <label for="server-name" class="col-form-label">Server*:</label>
+            <input id="server-name" type="text" name="server-URL" class="form-control"
+              value="ws://10.2.1.130:8081/notification">
+          </div>
+          <div style="width: 100%; height: 100%;">
+            <label for="code-editor" class="col-form-label">Only JSON Content:</label>
+            <div id="code-editor" name="textarea-notification-content" class="rounded-1"></div>
+          </div>
+          <div class="invalid-feedback" style="display: block;">
+            <span class="textarea-validation-msg"></span>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success btn-send-notification">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="ace-builds-master/src-noconflict/ace.js"></script>
+<script>
+  const editor = ace.edit("code-editor");
+  editor.setTheme("ace/theme/dracula");
+  editor.session.setMode("ace/mode/json");
+  const initialContentCodeEditor = '{\n  "group": "TELEHEALTH",\n  "durationSeconds": 3000,\n  "title": "Title notification",\n  "priority": "HIGH",\n  "recipients": ["User1", "Technology", "EMR"],\n  "content": "Content notification 7"\n}';
+  editor.setValue(initialContentCodeEditor);
+</script>
