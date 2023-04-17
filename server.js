@@ -2,6 +2,7 @@
 
 const http = require("http");
 const fs = require("fs");
+const path = require('path');
 const WebSocket = require('ws');
 const moment = require('moment');
 
@@ -10,39 +11,62 @@ const port = 3080;
 
 // A simple dataSource that changes over time
 const requestListener = (request, response) => {
-    console.log(`server.js: Enter in requestListener -> ${request.url}`);
-    if (request.url == '/' || request.url === '/notification' || request.url === '/notification.html') {
-        fs.readFile("notification.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}));
-    } else if (request.url === '/modal-channel.html') {
-        fs.readFile("modal-channel.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}))
-    } else if (request.url === '/modal-connection.html') {
-        fs.readFile("modal-connection.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}));
-    } else if (request.url === '/modal-send-notifications.html') {
-        fs.readFile("/modal-send-notifications.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}));
-    } else if (request.url === '/websocket.js') {
-        fs.readFile("websocket.js", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/javascript'}));
-    } else if (request.url === '/console.js') {
-        fs.readFile("console.js", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/javascript'}));
-    } else if (request.url === '/logger.js') {
-        fs.readFile("logger.js", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/javascript'}));
-    } else if (request.url === '/toasts.js') {
-        fs.readFile("toasts.js", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/javascript'}));
-    } else if (request.url === '/notification.css') {
-        fs.readFile("notification.css", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/css'}));
-    } else {
-        console.log(`server.js: The resource ${request.url} does not found`);
-        fs.readFile("404.html", (error, data) => actionExecute( { error: error, data: data, response: response, contentType: 'text/html'}));
-    }
+    const filePath = getFilePath(request.url);
+    const contentType = getContentType(filePath);
+
+    fs.readFile(filePath, function(error, content) {
+        if (error) {
+            if(error.code == 'ENOENT'){
+                fs.readFile('./404.html', function(error, content) {
+                    response.writeHead(200, { 'Content-Type': contentType });
+                    response.end(content, 'utf-8');
+                });
+            }
+            else {
+                response.writeHead(500);
+                response.end('Sorry, check with the site admin for error: '+error.code+' ..\n');
+                response.end();
+            }
+        }
+        else {
+            response.writeHead(200, { 'Content-Type': contentType });
+            response.end(content, 'utf-8');
+        }
+    });
 };
 
-actionExecute = function (action) {
-    let responseCode = action.error ? 404 : 200;
-    action.response.writeHead(responseCode, action.contentType);
-    if (responseCode == 200) {
-        action.response.write(action.data);
+getFilePath = function (url) {
+    const filePath = '.' + url;
+    if (filePath == './')
+       return './notification.html';
+    return filePath;
+}
+
+getContentType = function (filePath) {
+    const extname = path.extname(filePath);
+    let contentType = 'text/html';
+    switch (extname) {
+        case '.js':
+            contentType = 'text/javascript';
+            break;
+        case '.css':
+            contentType = 'text/css';
+            break;
+        case '.json':
+            contentType = 'application/json';
+            break;
+        case '.png':
+            contentType = 'image/png';
+            break;
+        case '.jpg':
+            contentType = 'image/jpg';
+            break;
+        case '.wav':
+            contentType = 'audio/wav';
+            break;
     }
-    action.response.end(action.error);
-};
+    return contentType;
+}
 
 const server = http.createServer(requestListener);
 server.listen(port, host, () => console.log(`server.js: server running at http://${host}:${port}`));
