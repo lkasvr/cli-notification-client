@@ -124,7 +124,7 @@ function createConsole(template, modalConnection, modalChannel, modalSendNotific
             self.modalConnection.find('.btn-connection').click(function () {
                 const currentTextarea = self.template.find("textarea[data-selected='true']");
                 const session = self.sessions.get(currentTextarea.attr('id'));
-                if (session.ws.isConnected()) return callAlert('It is only possible to connect if there is no connection.', type = 'warning');
+                if (session.ws.isConnected()) return callAlert('It is only possible to connect if there is no connection.', 'warning');
 
                 const url = self.modalConnection.find('#host-name').val();
                 self.modalConnection.modal('hide');
@@ -153,7 +153,7 @@ function createConsole(template, modalConnection, modalChannel, modalSendNotific
 
             self.template.find("#li-disconnect-btn").click(function () {
                 const session = self.sessions.get(self.template.find("textarea[data-selected='true']").attr('id'));
-                if (!session.ws.isConnected()) return callAlert('It is only possible to disconnect if there is a connection.', type = 'warning');
+                if (!session.ws.isConnected()) return callAlert('It is only possible to disconnect if there is a connection.', 'warning');
                 session.ws.close();
                 toggleConnection();
             });
@@ -163,7 +163,7 @@ function createConsole(template, modalConnection, modalChannel, modalSendNotific
             self.template.find('.subscribe-session').click(() => {
                 const currentTextarea = self.template.find("textarea[data-selected='true']");
                 const session = self.sessions.get(currentTextarea.attr('id'));
-                if (!session.ws.isConnected()) return callAlert('It is only allowed to subscribe on some channels when connected.', type = 'warning');
+                if (!session.ws.isConnected()) return callAlert('It is only allowed to subscribe on some channels when connected.', 'warning');
                 self.modalChannel.find('.btn-subscribe').removeClass('hiddenElement');
                 self.modalChannel.find('.btn-unsubscribe').addClass('hiddenElement');
                 self.modalChannel.modal('show');
@@ -187,7 +187,7 @@ function createConsole(template, modalConnection, modalChannel, modalSendNotific
             self.template.find('.unsubscribe-session').click(function () {
                 const currentTextarea = self.template.find("textarea[data-selected='true']");
                 const session = self.sessions.get(currentTextarea.attr('id'));
-                if (!session.ws.isConnected()) return callAlert('It is only allowed to unsubscribe on some channels when connected.', type = 'warning');
+                if (!session.ws.isConnected()) return callAlert('It is only allowed to unsubscribe on some channels when connected.', 'warning');
                 self.modalChannel.find('.btn-subscribe').addClass('hiddenElement');
                 self.modalChannel.find('.btn-unsubscribe').removeClass('hiddenElement');
                 self.modalChannel.modal('show');
@@ -222,34 +222,34 @@ function createConsole(template, modalConnection, modalChannel, modalSendNotific
                 const formData = new FormData(this);
                 const validationMsg = self.modalSendNotifications.find('.textarea-validation-msg');
                 validationMsg.html('');
-                try {
-                    const tenantId = formData.get('tenant-id');
-                    const data = editor.getValue()
-                    editorResponse.setValue("");
+                const tenantId = formData.get('tenant-id');
+                const data = editor.getValue()
+                editorResponse.setValue("");
 
-                    let headers = {
+                /* JSON Validation */
+                try { JSON.parse(data) } catch (e) { return validationMsg.html(e); } // Don't delete this line
+
+                    const headers = {
                         'Content-Type': 'application/json',
                         'Tenant-Id': `'${tenantId}'`
                     }
 
-                    jQuery.ajax({type: 'POST', url: '/notification-api', data: data, headers: headers, success: function (res) {
+                    jQuery.ajax({
+                        type: 'POST', url: '/notification-api', data, headers,
+                        success: (res) => {
                             let result = JSON.stringify(res);
                             console.log('success: '+result);
                             editorResponse.setValue(result);
                         },
-                        error: function (xhr) {
+                        error: (xhr) => {
                             if (xhr) {
-                                let result = xhr.status ? xhr.status : '000';
-                                result += " - ";
-                                result += xhr.statusMessage ? xhr.statusMessage : "";
-                                validationMsg.html(result);
+                                let errorMsg = `${xhr.status ? xhr.status : 'Status none'} - ${xhr.statusText}`;
+                                console.error('POST Error below:', xhr, xhr.responseText);
+                                callAlert(`See the console for more than that: ${errorMsg}`, 'danger')
                             }
 
                         }
                     });
-                } catch (e) {
-                    validationMsg.html(e.message);
-                }
                 return;
             });
             /****/

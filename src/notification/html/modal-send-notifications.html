@@ -1,32 +1,35 @@
 <!-- Modal HTML -->
 <div class="modal fade modal-send-notifications" tabindex="-1" aria-labelledby="modalSendNotification"
   aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
+  <div class="modal-dialog modal-xl" style="height: 100%;">
+    <div class="modal-content" style="height: 80%;">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="modalSendNotification">Notification JSON Config</h1>
         <div data-bs-theme="dark"><button type="button" class="btn-close" data-bs-dismiss="modal"
             aria-label="Close"></button></div>
       </div>
-      <div class="modal-body">
-        <form class="send-notification">
+      <form class="modal-body send-notification p-2" style="height: 100%;">
+        <div class="form-div-container" style="height: 10%;">
           <div style="width: 100%;">
             <label for="server-name" class="col-form-label">Tenant-Id*:</label>
-            <input id="server-name" type="text" name="tenant-id" class="form-control" value="HSL">
+            <input id="server-name" type="text" name="tenant-id" class="form-control" value="HSL" style="width: 50%;">
           </div>
-          <div style="width: 100%;">
+        </div>
+        <div class="form-div-container">
+          <div class="editor-container">
             <label for="code-editor" class="col-form-label">Request body:</label>
             <div id="code-editor" name="textarea-notification-content" class="rounded-1"></div>
           </div>
-          <div style="width: 100%;">
+
+          <div class="editor-container">
             <label for="code-editor-response" class="col-form-label">Response body:</label>
             <div id="code-editor-response" name="textarea-notification-content-response" class="rounded-1"></div>
           </div>
-          <div class="invalid-feedback" style="display: block;">
-            <span class="textarea-validation-msg"></span>
-          </div>
-        </form>
-      </div>
+        </div>
+        <div class="invalid-feedback" style="display: block;">
+          <span class="textarea-validation-msg"></span>
+        </div>
+      </form>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
         <button type="button" class="btn btn-success btn-send-notification">Send</button>
@@ -36,15 +39,20 @@
 </div>
 <script src="external-libraries/ace/src-min-noconflict/ace.js"></script>
 <script>
-  const editor = ace.edit("code-editor");
-  editor.setTheme("ace/theme/dracula");
-  editor.session.setMode("ace/mode/json");
-  const initialContentCodeEditor = '{\n  "group": "TELEHEALTH",\n  "durationSeconds": 3000,\n  "title": "Title notification",\n  "priority": "HIGH",\n  "recipients": ["User1", "Technology", "EMR"],\n  "content": "Content notification 7"\n}';
-  editor.setValue(initialContentCodeEditor);
+  const codeEditorConfigs = {
+    divID: { 'code-editor': 'code-editor', 'code-editor-response': 'code-editor-response' },
+    themes: { dracula: 'ace/theme/dracula' },
+    mode: { json: 'ace/mode/json' },
+    initialContentCodeEditor: '{\n  "group": "TELEHEALTH",\n  "durationSeconds": 3000,\n  "title": "Title notification",\n  "priority": "HIGH",\n  "recipients": ["User1", "Technology", "EMR"],\n  "content": "Content notification 7"\n}',
+  };
 
-  const editorResponse = ace.edit("code-editor-response");
-  editorResponse.setTheme("ace/theme/dracula");
-  editorResponse.session.setMode("ace/mode/json");
-  editorResponse.setValue(initialContentCodeEditor);
+  const editor = ace.edit(codeEditorConfigs.divID['code-editor']);
+  editor.setTheme(codeEditorConfigs.themes['dracula']);
+  editor.session.setMode(codeEditorConfigs.mode['json']);
+  editor.setValue(codeEditorConfigs.initialContentCodeEditor);
 
+  const editorResponse = ace.edit(codeEditorConfigs.divID['code-editor-response']);
+  editorResponse.setTheme(codeEditorConfigs.themes['dracula']);
+  editorResponse.session.setMode(codeEditorConfigs.mode['json']);
+  editorResponse.setReadOnly(true);
 </script>

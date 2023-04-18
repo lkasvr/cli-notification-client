@@ -26,7 +26,6 @@ app.get('*',(request, response) => {
     response.sendFile(path.join(__dirname, filePath));
 });
 
-
 app.post('/notification-api', (request, response) => {
 
     const data = JSON.stringify(request.body);
