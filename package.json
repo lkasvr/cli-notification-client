@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/app.js",
   "scripts": {
-    "start": "node src/app.js",
+    "start": "nodemon src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -15,5 +15,14 @@
     "http-proxy": "^1.18.1",
     "minimist": "^1.2.8",
     "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "nodemonConfig": {
+    "watch": [],
+    "ext": "html,js,css",
+    "ignore": [],
+    "delay": "3"
   }
 }

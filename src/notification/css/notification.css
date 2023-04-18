@@ -220,11 +220,6 @@ a.nav-link.dropdown-toggle:after {
     max-height: 81vh;
 }
 
-.notification-modal-content {
-    height: 800px;
-    width: 800px;
-}
-
 form.send-notification {
     height: 100%;
     width: 100%;
@@ -233,7 +228,7 @@ form.send-notification {
 }
 
 #code-editor {
-    height: 40%;
+    height: 100%;
     width: 100%;
 }
 
