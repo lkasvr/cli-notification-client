@@ -18,7 +18,7 @@ const port = process.env.PORT || 3080;
 
 app.use(express.json());
 
-app.get('*', function (request, response) {
+app.get('*',(request, response) => {
     console.log(`get request get -> ${request.url}`)
     let filePath = '.' + request.url;
     if (filePath === './' || filePath === './app.js')
@@ -27,7 +27,7 @@ app.get('*', function (request, response) {
 });
 
 
-app.post('/notification-api', function (request, response) {
+app.post('/notification-api', (request, response) => {
 
     const data = JSON.stringify(request.body);
     const headers = {
@@ -70,7 +70,6 @@ app.post('/notification-api', function (request, response) {
 
     req.write(data);
     req.end();
-
 });
 
 console.log(`listen -> ${protocol}://${host}:${port}`)
