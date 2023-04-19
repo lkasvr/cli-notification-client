@@ -95,20 +95,17 @@ function createConsole(template, modalConnection, modalChannel, modalSendNotific
                 const liDisonnectBtn = self.template.find("#li-disconnect-btn");
                 const liSubscribeSession = self.template.find('.li-subscribe-session');
                 const liUnsubscribeSession = self.template.find('.li-unsubscribe-session');
-                const liSendNotificaiton = self.template.find('li-send-notifications');
 
                 if (session.ws.isConnected()) {
                     liConnectBtn.addClass('hiddenElement');
                     liDisonnectBtn.removeClass('hiddenElement');
                     liSubscribeSession.removeClass('hiddenElement');
                     liUnsubscribeSession.removeClass('hiddenElement');
-                    liSendNotificaiton.removeClass('hiddenElement');
                 } else {
                     liConnectBtn.removeClass('hiddenElement');
                     liDisonnectBtn.addClass('hiddenElement');
                     liSubscribeSession.addClass('hiddenElement');
                     liUnsubscribeSession.addClass('hiddenElement');
-                    liSendNotificaiton.addClass('hiddenElement');
                 }
             }
 
@@ -207,9 +204,7 @@ function createConsole(template, modalConnection, modalChannel, modalSendNotific
             /****/
 
             // Send Notification Operation's
-
             self.template.find('.li-send-notifications').click(function () {
-                editorResponse.setValue("");
                 self.modalSendNotifications.modal('show');
             });
 
@@ -236,21 +231,33 @@ function createConsole(template, modalConnection, modalChannel, modalSendNotific
 
                     jQuery.ajax({
                         type: 'POST', url: '/notification-api', data, headers,
-                        success: (res) => {
-                            let result = JSON.stringify(res);
-                            console.log('success: '+result);
-                            editorResponse.setValue(result);
+                        success: (res, status, xhr) => {
+                            editorResponse.setTheme(codeEditorConfigs.themes['dracula']);
+                            editorResponse.setValue(JSON.stringify(res, null, 2));
+                            self.modalSendNotifications.find('#code-editor-response').css({'border': '2px solid green'});
+                            self.modalSendNotifications.find('span#status-code').replaceWith(`<span id="status-code" class="badge text-bg-success">${xhr.status}</span>`);
                         },
                         error: (xhr) => {
                             if (xhr) {
                                 let errorMsg = `${xhr.status ? xhr.status : 'Status none'} - ${xhr.statusText}`;
                                 console.error('POST Error below:', xhr, xhr.responseText);
                                 callAlert(`See the console for more than that: ${errorMsg}`, 'danger')
+                                editorResponse.setTheme(codeEditorConfigs.themes['dracula']);
+                                self.modalSendNotifications.find('#code-editor-response').css({'border': '2px solid red'});
+                                self.modalSendNotifications.find('span#status-code').replaceWith(`<span id="status-code" class="badge text-bg-danger">${xhr.status}</span>`);
+                                editorResponse.setValue(JSON.stringify(xhr, null, 2));
                             }
 
                         }
                     });
                 return;
+            });
+
+            self.modalSendNotifications.find('.btn-reset-modal-code-editors').click(function () {
+                editorResponse.setValue("");
+                self.modalSendNotifications.find('#server-name').attr('value', '');
+                self.modalSendNotifications.find('#code-editor-response').css({'border': ''});
+                self.modalSendNotifications.find('span#status-code').replaceWith(`<span id="status-code" class="badge"></span>`);
             });
             /****/
 

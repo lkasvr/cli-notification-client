@@ -10,10 +10,9 @@
       </div>
       <form class="modal-body send-notification p-2" style="height: 100%;">
         <div class="form-div-container" style="height: 10%;">
-          <div style="width: 100%;">
-            <label for="server-name" class="col-form-label">Tenant-Id*:</label>
-            <input id="server-name" type="text" name="tenant-id" class="form-control" value="HSL" style="width: 50%;">
-          </div>
+          <label for="server-name" class="col-form-label" style="width: 100%;">Tenant-Id*:</label>
+          <input id="server-name" type="text" name="tenant-id" class="form-control" value="HSL" style="width: 49%;">
+          <input class="btn btn-primary btn-reset-modal-code-editors" style="width: 10%;" type="reset" value="Reset">
         </div>
         <div class="form-div-container">
           <div class="editor-container">
@@ -22,7 +21,8 @@
           </div>
 
           <div class="editor-container">
-            <label for="code-editor-response" class="col-form-label">Response body:</label>
+            <label for="code-editor-response" class="col-form-label response-body-label">Response body: <span
+                id="status-code" class="badge text-bg-danger"></span></label>
             <div id="code-editor-response" name="textarea-notification-content-response" class="rounded-1"></div>
           </div>
         </div>
@@ -41,7 +41,10 @@
 <script>
   const codeEditorConfigs = {
     divID: { 'code-editor': 'code-editor', 'code-editor-response': 'code-editor-response' },
-    themes: { dracula: 'ace/theme/dracula' },
+    themes: {
+      dracula: 'ace/theme/dracula',
+      tomorrow: 'ace/theme/tomorrow',
+    },
     mode: { json: 'ace/mode/json' },
     initialContentCodeEditor: '{\n  "group": "TELEHEALTH",\n  "durationSeconds": 3000,\n  "title": "Title notification",\n  "priority": "HIGH",\n  "recipients": ["User1", "Technology", "EMR"],\n  "content": "Content notification 7"\n}',
   };

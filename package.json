@@ -5,13 +5,14 @@
   "main": "src/app.js",
   "scripts": {
     "start": "nodemon src/app.js",
-    "startx": "NOTIFICATION_API_HOST=10.2.1.130 nodemon src/app.js",
+    "host": "NOTIFICATION_API_HOST=10.2.1.130 nodemon src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "minimist": "^1.2.8",
     "path": "^0.12.7"
