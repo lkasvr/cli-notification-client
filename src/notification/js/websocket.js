@@ -1,5 +1,5 @@
 function createWebSocket(logger, toasts, dataSession) {
-   if (!("WebSocket" in window)) alert("WebSocket NOT supported by your Browser!");
+   if (!("WebSocket" in window)) alert("WebSocket ISN'T supported by your Browser!");
    let notificationWebSocket = {
       logger,
       toasts,
@@ -17,13 +17,36 @@ function createWebSocket(logger, toasts, dataSession) {
             callbackOpen();
          };
          self.ws.onmessage = (evt) => {
+            const self = this;
             const data = JSON.parse(evt.data);
             self.logger.append('info', `websocket.js: received [${data.content}].`);
-            if (data.operation !== 'SUBSCRIBING') {
-               toasts.globalAppNotify(data, dataSession);
-            }
-            toasts.notificationPanelNotify(data, dataSession);
+            if (data.operation !== 'SUBSCRIBING') toasts.globalAppNotify(data, dataSession, self.ws);
+            toasts.notificationPanelNotify(data, dataSession, self.ws);
          }
+         self.ws.markAsRead = (notification, toast) => {
+            const self = this;
+            if (self.ws) {
+               self.logger.append('info', `websocket.js: marking as read notification ${notification.title}.`);
+               self.ws.send(JSON.stringify({operation: 'MARK_AS_READ'}));
+               self.logger.append('info', `websocket.js: marked as read notification ${notification.title}.`);
+               toast.removeClass('border-primary ').addClass('border-secondary');
+               toast.find('.notification-badge').addClass('hiddenElement');
+               toast.find('a.btn-mar').addClass('hiddenElement');
+               toast.find('a.btn-maur').removeClass('hiddenElement');
+            }
+         };
+         self.ws.markAsUnread = (notification, toast) => {
+            const self = this;
+            if (self.ws) {
+               self.logger.append('info', `websocket.js: marking as unread notification ${notification.title}.`);
+               self.ws.send(JSON.stringify({operation: 'MARK_AS_UNREAD'}));
+               self.logger.append('info', `websocket.js: marked as unread notification ${notification.title}.`);
+               toast.removeClass('border-secondary ').addClass('border-primary');
+               toast.find('.notification-badge').removeClass('hiddenElement');
+               toast.find('a.btn-maur').addClass('hiddenElement');
+               toast.find('a.btn-mar').removeClass('hiddenElement');
+            }
+         };
       },
       subscribe: function(channels) {
          const self = this;
